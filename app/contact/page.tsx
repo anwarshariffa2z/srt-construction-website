@@ -1,7 +1,7 @@
 "use client";
 
 import { Reveal } from "@/components/Reveal";
-import { MagneticButton } from "@/components/MagneticButton";
+// Unused MagneticButton import removed
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -29,7 +29,7 @@ export default function Contact() {
               Start a Conversation.
             </h1>
             <p className="text-white/70 max-w-[36ch] mb-12">
-              Let's discuss how our unified team can bring your vision to reality without compromise.
+              Let&apos;s discuss how our unified team can bring your vision to reality without compromise.
             </p>
 
             <div className="space-y-6 text-sm text-white/80">

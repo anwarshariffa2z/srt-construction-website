@@ -46,7 +46,7 @@ export function Testimonials() {
               className="absolute w-full max-w-[800px] text-center"
             >
               <p className="font-serif text-[clamp(1.5rem,3vw,2.2rem)] leading-snug mb-8 font-light italic">
-                "{TESTIMONIALS[active].quote}"
+                &quot;{TESTIMONIALS[active].quote}&quot;
               </p>
               <div>
                 <div className="text-sm uppercase tracking-widest text-white/90 mb-1">

@@ -265,7 +265,7 @@ export default function MaterialsPage() {
             Engineering Specifications
           </h1>
           <p className="text-[#a39a8a] text-lg md:text-xl max-w-2xl font-light">
-            Uncompromising quality mandated by IS codes and rigorous engineering protocols. We don't just build; we engineer longevity.
+            Uncompromising quality mandated by IS codes and rigorous engineering protocols. We don&apos;t just build; we engineer longevity.
           </p>
         </Reveal>
       </section>

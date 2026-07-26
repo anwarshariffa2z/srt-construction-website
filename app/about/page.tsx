@@ -41,7 +41,7 @@ export default function About() {
               In traditional construction, the architect hands a vision to an engineer, who hands a compromised version to a builder, who cuts corners to meet a budget. 
             </p>
             <p className="text-[1.1rem] text-white/70 leading-relaxed">
-              At SRT Constructions, there are no hand-offs. We take absolute accountability for every square inch of our projects, from the initial sketch to the final execution. If something isn't perfect, we only have ourselves to blame.
+              At SRT Constructions, there are no hand-offs. We take absolute accountability for every square inch of our projects, from the initial sketch to the final execution. If something isn&apos;t perfect, we only have ourselves to blame.
             </p>
           </Reveal>
           

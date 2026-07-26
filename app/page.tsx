@@ -75,7 +75,7 @@ export default function Home() {
           <Reveal>
             <div className="text-[0.66rem] tracking-[0.34em] uppercase text-[#c9a468] mb-6">Uncompromising Quality</div>
             <h2 className="font-serif font-light text-[clamp(2.5rem,4vw,4rem)] mb-8">
-              Built with India's Finest.
+              Built with India&apos;s Finest.
             </h2>
             <p className="text-white/70 leading-relaxed mb-8">
               A structure is only as strong as its weakest component. We bypass generic suppliers and source directly from the most trusted manufacturing giants in Tamil Nadu and across India. 
