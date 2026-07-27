@@ -8,7 +8,7 @@ import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { ChatWidget } from "@/components/ChatWidget";
+import { ChatWidgetWrapper } from "@/components/ChatWidgetWrapper";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
@@ -135,7 +135,7 @@ export default function RootLayout({
           
           <Footer />
           <WhatsAppButton />
-          <ChatWidget />
+          <ChatWidgetWrapper />
         </SmoothScroll>
 
         <JsonLd />

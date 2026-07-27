@@ -1,6 +1,3 @@
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { streamText } from 'ai';
-
 const SYSTEM_PROMPT = `
 You are the Chief AI Sales Engineer for SRT Constructions, a premium construction, architecture, and interior design firm based in Chennai, Tamil Nadu.
 Your job is to answer client questions professionally, accurately, and persuasively using ONLY the knowledge provided below. 
@@ -49,35 +46,85 @@ RULES FOR ANSWERING:
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
-
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 
-    // Check if API key exists
     if (!apiKey) {
       return new Response(
-        "API_KEY_MISSING: The AI Sales Engineer is currently offline because the GOOGLE_GENERATIVE_AI_API_KEY is not set in the environment variables.", 
-        { status: 500, headers: { 'Content-Type': 'text/plain' } }
+        "API_KEY_MISSING: The AI Sales Engineer is offline because the API key is not set.", 
+        { status: 500 }
       );
     }
 
-    const google = createGoogleGenerativeAI({
-      apiKey: apiKey,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const contents = messages.map((m: any) => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: m.content }]
+    }));
+
+    contents.unshift({
+      role: 'user',
+      parts: [{ text: SYSTEM_PROMPT }]
     });
 
-    const result = await streamText({
-      model: google('gemini-1.5-flash'),
-      system: SYSTEM_PROMPT,
-      messages,
-      temperature: 0.3, // Low temp for factual, professional responses
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents })
     });
 
-    return result.toUIMessageStreamResponse();
+    if (!response.ok) {
+      const errorText = await response.text();
+      return new Response(`Gemini API Error: ${errorText}`, { status: response.status });
+    }
+
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    const stream = new TransformStream({
+      transform(chunk, controller) {
+        buffer += decoder.decode(chunk, { stream: true });
+        
+        let boundary = buffer.indexOf('\n');
+        while (boundary !== -1) {
+          const line = buffer.slice(0, boundary).trim();
+          buffer = buffer.slice(boundary + 1);
+          
+          if (line.startsWith('"text": "')) {
+            // Very simple string extraction for SSE chunks from Gemini to avoid complex JSON parsing of partial streams
+            const textMatch = line.match(/"text":\s*"(.*)"/);
+            if (textMatch && textMatch[1]) {
+              try {
+                // Decode the JSON-encoded string chunk from Gemini
+                const decodedText = JSON.parse(`"${textMatch[1]}"`);
+                // Format for Vercel AI SDK: 0:"<json-encoded text>"\n
+                const vercelPayload = `0:${JSON.stringify(decodedText)}\n`;
+                controller.enqueue(encoder.encode(vercelPayload));
+              } catch (e) {
+                // Ignore parse errors on partial matches
+              }
+            }
+          }
+          boundary = buffer.indexOf('\n');
+        }
+      },
+      flush(controller) {
+        // flush any remaining buffer if needed
+      }
+    });
+
+    if (!response.body) throw new Error("No response body");
+
+    return new Response(response.body.pipeThrough(stream), {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Vercel-AI-Data-Stream': 'v1'
+      }
+    });
+
   } catch (error: unknown) {
     console.error("Chat API Error:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return new Response(
-      `AI_STREAM_ERROR: ${errorMessage}`,
-      { status: 500, headers: { 'Content-Type': 'text/plain' } }
-    );
+    return new Response(`AI_STREAM_ERROR: ${errorMessage}`, { status: 500 });
   }
 }
