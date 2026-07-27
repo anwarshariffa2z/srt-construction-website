@@ -1,6 +1,5 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { streamText } from 'ai';
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 export const runtime = 'edge';
 
@@ -53,17 +52,7 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    let apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-
-    // Fallback to Cloudflare Context if process.env is empty
-    if (!apiKey) {
-      try {
-        const { env } = getCloudflareContext();
-        apiKey = (env as Record<string, string | undefined>).GOOGLE_GENERATIVE_AI_API_KEY;
-      } catch (e) {
-        console.error("Could not get Cloudflare context", e);
-      }
-    }
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 
     // Check if API key exists
     if (!apiKey) {
@@ -88,10 +77,13 @@ export async function POST(req: Request) {
     });
 
     return result.toTextStreamResponse();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Chat API Error:", error);
     return new Response(
-      JSON.stringify({ error: "An error occurred while processing your request." }),
+      JSON.stringify({ 
+        error: "An error occurred while processing your request.",
+        message: error?.message || String(error)
+      }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
