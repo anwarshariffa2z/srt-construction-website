@@ -36,7 +36,7 @@ export function ChatWidget() {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!localInput.trim()) return;
-    sendMessage(localInput);
+    sendMessage({ text: localInput });
     setLocalInput('');
   };
 
