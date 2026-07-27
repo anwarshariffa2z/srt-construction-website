@@ -70,7 +70,7 @@ export async function POST(req: Request) {
       temperature: 0.3, // Low temp for factual, professional responses
     });
 
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error) {
     console.error("Chat API Error:", error);
     return new Response(
