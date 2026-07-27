@@ -1,8 +1,6 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { streamText } from 'ai';
 
-export const runtime = 'edge';
-
 const SYSTEM_PROMPT = `
 You are the Chief AI Sales Engineer for SRT Constructions, a premium construction, architecture, and interior design firm based in Chennai, Tamil Nadu.
 Your job is to answer client questions professionally, accurately, and persuasively using ONLY the knowledge provided below. 
