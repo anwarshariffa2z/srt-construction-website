@@ -32,7 +32,11 @@ export function Header() {
   return (
     <>
       <nav className={`fixed top-0 left-0 right-0 z-[100] flex justify-between items-center px-[5vw] py-6`}>
-        <Link href="/" className="transition-opacity hover:opacity-80 relative z-[101]" onClick={() => setMobileMenuOpen(false)}>
+        <Link 
+          href="/" 
+          className="transition-opacity hover:opacity-80 relative z-[101] bg-white/90 p-2 rounded-lg backdrop-blur-sm shadow-md" 
+          onClick={() => setMobileMenuOpen(false)}
+        >
           <Image 
             src="/assets/srt_logo.png" 
             alt="SRT Constructions Logo" 
