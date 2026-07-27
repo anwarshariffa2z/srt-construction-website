@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { getAllPublishedPosts } from "@/lib/blog";
 import { format } from "date-fns";
+import type { Metadata } from 'next';
 
-export const dynamic = "force-dynamic";
+export const revalidate = 86400; // Cache for 24 hours on the Edge
 
 export const metadata = {
   title: "Blog | SRT Constructions",

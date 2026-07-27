@@ -6,16 +6,33 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Contact() {
-  const [formState, setFormState] = useState<"idle" | "submitting" | "success">("idle");
+  const [formState, setFormState] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    projectType: "Commercial & Industrial",
+    message: ""
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormState("submitting");
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error("Failed to send");
+      
       setFormState("success");
-    }, 1500);
+      setFormData({ name: "", email: "", projectType: "Commercial & Industrial", message: "" });
+    } catch (error) {
+      console.error(error);
+      setFormState("error");
+    }
   };
 
   return (
@@ -84,19 +101,43 @@ export default function Contact() {
                   onSubmit={handleSubmit}
                   className="space-y-8"
                 >
+                  {formState === "error" && (
+                    <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg">
+                      There was a problem sending your message. Please try again or email us directly.
+                    </div>
+                  )}
+
                   <div className="border-b border-white/20 pb-2">
                     <label className="block text-[0.6rem] tracking-[0.2em] uppercase text-white/50 mb-2">Name</label>
-                    <input required type="text" className="w-full bg-transparent outline-none text-xl placeholder-white/20 text-white" placeholder="John Doe" />
+                    <input 
+                      required 
+                      type="text" 
+                      value={formData.name}
+                      onChange={(e) => setFormData(p => ({ ...p, name: e.target.value }))}
+                      className="w-full bg-transparent outline-none text-xl placeholder-white/20 text-white" 
+                      placeholder="John Doe" 
+                    />
                   </div>
                   
                   <div className="border-b border-white/20 pb-2">
                     <label className="block text-[0.6rem] tracking-[0.2em] uppercase text-white/50 mb-2">Email</label>
-                    <input required type="email" className="w-full bg-transparent outline-none text-xl placeholder-white/20 text-white" placeholder="john@example.com" />
+                    <input 
+                      required 
+                      type="email" 
+                      value={formData.email}
+                      onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))}
+                      className="w-full bg-transparent outline-none text-xl placeholder-white/20 text-white" 
+                      placeholder="john@example.com" 
+                    />
                   </div>
 
                   <div className="border-b border-white/20 pb-2">
                     <label className="block text-[0.6rem] tracking-[0.2em] uppercase text-white/50 mb-2">Project Type</label>
-                    <select className="w-full bg-transparent outline-none text-xl text-white/80 appearance-none">
+                    <select 
+                      value={formData.projectType}
+                      onChange={(e) => setFormData(p => ({ ...p, projectType: e.target.value }))}
+                      className="w-full bg-transparent outline-none text-xl text-white/80 appearance-none"
+                    >
                       <option className="bg-[#2a251d]">Commercial & Industrial</option>
                       <option className="bg-[#2a251d]">Luxury Residential</option>
                       <option className="bg-[#2a251d]">Turnkey MEP</option>
@@ -105,7 +146,14 @@ export default function Contact() {
 
                   <div className="border-b border-white/20 pb-2">
                     <label className="block text-[0.6rem] tracking-[0.2em] uppercase text-white/50 mb-2">Message</label>
-                    <textarea required rows={3} className="w-full bg-transparent outline-none text-xl placeholder-white/20 text-white resize-none" placeholder="Tell us about your project..." />
+                    <textarea 
+                      required 
+                      rows={3} 
+                      value={formData.message}
+                      onChange={(e) => setFormData(p => ({ ...p, message: e.target.value }))}
+                      className="w-full bg-transparent outline-none text-xl placeholder-white/20 text-white resize-none" 
+                      placeholder="Tell us about your project..." 
+                    />
                   </div>
 
                   <div className="pt-6 flex items-center gap-6">
