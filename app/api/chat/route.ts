@@ -77,12 +77,13 @@ export async function POST(req: Request) {
     });
 
     return result.toTextStreamResponse();
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Chat API Error:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(
       JSON.stringify({ 
         error: "An error occurred while processing your request.",
-        message: error?.message || String(error)
+        message: errorMessage
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
