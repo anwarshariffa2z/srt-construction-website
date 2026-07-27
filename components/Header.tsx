@@ -31,19 +31,19 @@ export function Header() {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[100] flex justify-between items-center px-[5vw] py-6 mix-blend-difference text-white`}>
+      <nav className={`fixed top-0 left-0 right-0 z-[100] flex justify-between items-center px-[5vw] py-6`}>
         <Link href="/" className="transition-opacity hover:opacity-80 relative z-[101]" onClick={() => setMobileMenuOpen(false)}>
           <Image 
             src="/assets/srt_logo.png" 
             alt="SRT Constructions Logo" 
-            width={80} 
-            height={30} 
+            width={160} 
+            height={60} 
             className="object-contain"
           />
         </Link>
         
         {/* Desktop Nav */}
-        <div className="hidden md:flex gap-10 relative z-[101]">
+        <div className="hidden md:flex gap-10 relative z-[101] mix-blend-difference text-white">
           {NAV_LINKS.map((link) => (
             <Link 
               key={link.path}
@@ -57,7 +57,7 @@ export function Header() {
 
         {/* Mobile Hamburger Button */}
         <button 
-          className="md:hidden relative z-[101] w-8 h-8 flex flex-col justify-center items-center gap-[6px]"
+          className="md:hidden relative z-[101] w-8 h-8 flex flex-col justify-center items-center gap-[6px] mix-blend-difference"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle Menu"
         >
