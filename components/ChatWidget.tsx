@@ -3,7 +3,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Loader2, AlertCircle } from 'lucide-react';
+import MessageSquare from 'lucide-react/dist/esm/icons/message-square';
+import X from 'lucide-react/dist/esm/icons/x';
+import Send from 'lucide-react/dist/esm/icons/send';
+import Loader2 from 'lucide-react/dist/esm/icons/loader-2';
+import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle';
 import ReactMarkdown from 'react-markdown';
 
 export function ChatWidget() {
