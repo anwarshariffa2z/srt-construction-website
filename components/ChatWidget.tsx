@@ -115,10 +115,8 @@ export function ChatWidget() {
                     <AlertCircle size={16} className="shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold mb-1">Connection Error</p>
-                      <p className="text-xs">
-                        {error.message.includes("API Key Missing") 
-                          ? "The AI is currently offline. The site administrator needs to configure the Gemini API key."
-                          : "Failed to connect to the AI service. Please try again later."}
+                      <p className="text-xs break-words">
+                        {error.message || "Failed to connect to the AI service. Please try again later."}
                       </p>
                     </div>
                   </div>
