@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     if (!apiKey) {
       try {
         const { env } = getCloudflareContext();
-        apiKey = (env as any).GOOGLE_GENERATIVE_AI_API_KEY;
+        apiKey = (env as Record<string, string | undefined>).GOOGLE_GENERATIVE_AI_API_KEY;
       } catch (e) {
         console.error("Could not get Cloudflare context", e);
       }
