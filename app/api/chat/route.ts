@@ -1,5 +1,5 @@
 import { google } from '@ai-sdk/google';
-import { streamText, UIMessage } from 'ai';
+import { streamText } from 'ai';
 
 export const runtime = 'edge';
 
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     const result = await streamText({
       model: google('gemini-1.5-flash'),
       system: SYSTEM_PROMPT,
-      messages: messages as UIMessage[],
+      messages,
       temperature: 0.3, // Low temp for factual, professional responses
     });
 
