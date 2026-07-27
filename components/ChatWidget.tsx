@@ -10,12 +10,11 @@ export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [localInput, setLocalInput] = useState('');
   const { messages, sendMessage, status, error } = useChat({
-    api: '/api/chat',
-    initialMessages: [
+    messages: [
       {
         id: 'initial-1',
         role: 'assistant',
-        content: "Hello. I am the AI Sales Engineer for SRT Constructions. How can I assist you with your project today? You can ask me about our material specifications, pricing, approvals, or construction methodology."
+        parts: [{ type: 'text', text: "Hello. I am the AI Sales Engineer for SRT Constructions. How can I assist you with your project today? You can ask me about our material specifications, pricing, approvals, or construction methodology." }],
       }
     ]
   });
@@ -69,7 +68,9 @@ export function ChatWidget() {
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--color-background)]">
-              {messages.map(m => (
+              {messages.map(m => {
+                const text = m.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { type: string; text: string }) => p.text).join('') || '';
+                return (
                 <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div 
                     className={`max-w-[85%] p-3 rounded-md text-sm leading-relaxed ${
@@ -82,22 +83,23 @@ export function ChatWidget() {
                       <div className="prose-custom prose-sm max-w-none">
                          <ReactMarkdown
                             components={{
-                              p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
-                              ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2" {...props} />,
-                              ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2" {...props} />,
-                              li: ({node, ...props}) => <li className="mb-1" {...props} />,
-                              strong: ({node, ...props}) => <strong className="font-semibold text-[var(--color-bronze-deep)]" {...props} />,
+                              p: (props) => <p className="mb-2 last:mb-0" {...props} />,
+                              ul: (props) => <ul className="list-disc pl-4 mb-2" {...props} />,
+                              ol: (props) => <ol className="list-decimal pl-4 mb-2" {...props} />,
+                              li: (props) => <li className="mb-1" {...props} />,
+                              strong: (props) => <strong className="font-semibold text-[var(--color-bronze-deep)]" {...props} />,
                             }}
                          >
-                           {m.content}
+                           {text}
                          </ReactMarkdown>
                       </div>
                     ) : (
-                      m.content
+                      text
                     )}
                   </div>
                 </div>
-              ))}
+              )})}
+
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-[var(--color-stone)]/30 border border-[var(--color-stone)] p-3 rounded-md flex items-center gap-2">
