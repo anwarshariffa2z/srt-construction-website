@@ -70,16 +70,17 @@ export function ChatWidget() {
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--color-background)]">
               {messages.map(m => {
                 const text = m.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { type: string; text: string }) => p.text).join('') || '';
+                const role = m.role as string;
                 return (
-                <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div key={m.id} className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div 
                     className={`max-w-[85%] p-3 rounded-md text-sm leading-relaxed ${
-                      m.role === 'user' 
+                      role === 'user' 
                         ? 'bg-[var(--color-bronze)] text-white' 
                         : 'bg-[var(--color-stone)]/30 text-[var(--color-foreground)] border border-[var(--color-stone)]'
                     }`}
                   >
-                    {m.role === 'assistant' ? (
+                    {role === 'assistant' ? (
                       <div className="prose-custom prose-sm max-w-none">
                          <ReactMarkdown
                             components={{
