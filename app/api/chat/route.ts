@@ -74,7 +74,7 @@ export async function POST(req: Request) {
       temperature: 0.3, // Low temp for factual, professional responses
     });
 
-    return result.toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error: unknown) {
     console.error("Chat API Error:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
