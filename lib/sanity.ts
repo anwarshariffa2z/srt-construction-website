@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createClient } from 'next-sanity';
 import imageUrlBuilder from '@sanity/image-url';
 
@@ -9,37 +11,47 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true, // Use CDN for extremely fast, cached edge reads
+  useCdn: true,
 });
 
 const builder = imageUrlBuilder(client);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function urlFor(source: any) {
   return builder.image(source);
 }
 
-// Fallback logic for when Sanity is not yet initialized
-export async function fetchSanityPosts() {
-  if (projectId === 'your-project-id') {
-    return []; // Return empty if not configured to prevent crashes
-  }
-  
-  try {
-    const query = `*[_type == "post"] | order(publishedAt desc) {
-      _id,
-      title,
-      slug,
-      excerpt,
-      publishedAt,
-      author,
-      mainImage,
-      categories[]->{title},
-      readingTime
-    }`;
-    return await client.fetch(query);
-  } catch (error) {
-    console.error("Error fetching from Sanity:", error);
-    return [];
-  }
+export async function getAllPosts() {
+  if (projectId === 'your-project-id') return [];
+  const query = `*[_type == 'post'] | order(publishedAt desc) { _id, title, "slug": slug.current, excerpt, publishedAt, "author": author->name, mainImage, "categories": categories[]->title, body }`;
+  try { return await client.fetch(query); } catch (e) { return []; }
+}
+
+export async function getPostBySlug(slug: string) {
+  if (projectId === 'your-project-id') return null;
+  const query = `*[_type == 'post' && slug.current == $slug][0] { _id, title, "slug": slug.current, excerpt, publishedAt, "author": author->name, mainImage, "categories": categories[]->title, body }`;
+  try { return await client.fetch(query, { slug }); } catch (e) { return null; }
+}
+
+export async function getAllPostSlugs(): Promise<string[]> {
+  if (projectId === 'your-project-id') return [];
+  const query = `*[_type == 'post' && defined(slug.current)][].slug.current`;
+  try { return await client.fetch(query); } catch (e) { return []; }
+}
+
+export async function getAllProjects() {
+  if (projectId === 'your-project-id') return [];
+  const query = `*[_type == 'project'] | order(completionDate desc) { _id, title, "slug": slug.current, category, location, client, timeline, value, completionDate, excerpt, mainImage, body }`;
+  try { return await client.fetch(query); } catch (e) { return []; }
+}
+
+export async function getProjectBySlug(slug: string) {
+  if (projectId === 'your-project-id') return null;
+  const query = `*[_type == 'project' && slug.current == $slug][0] { _id, title, "slug": slug.current, category, location, client, timeline, value, completionDate, excerpt, mainImage, body }`;
+  try { return await client.fetch(query, { slug }); } catch (e) { return null; }
+}
+
+export async function getAllProjectSlugs(): Promise<string[]> {
+  if (projectId === 'your-project-id') return [];
+  const query = `*[_type == 'project' && defined(slug.current)][].slug.current`;
+  try { return await client.fetch(query); } catch (e) { return []; }
 }

@@ -1,15 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
-import { getAllPublishedPosts } from "@/lib/blog";
+import { getAllPosts } from "@/lib/sanity";
 import { format } from "date-fns";
-import type { Metadata } from 'next';
 
 export const metadata = {
   title: "Blog | SRT Constructions",
   description: "Expert insights on construction, architecture, materials, and building in Chennai and Tamil Nadu.",
 };
 
-export default function BlogListing() {
-  const posts = getAllPublishedPosts();
+export default async function BlogListing() {
+  const posts = await getAllPosts();
 
   return (
     <main className="min-h-screen bg-[var(--color-background)] pt-[25vh] pb-[15vh] px-[6vw]">
@@ -31,7 +31,7 @@ export default function BlogListing() {
           </div>
         ) : (
           <div className="flex flex-col border-t border-[var(--color-stone)]">
-            {posts.map((post, index) => (
+            {posts.map((post: any) => (
               <Link 
                 key={post.slug}
                 href={`/blog/${post.slug}`}
@@ -40,7 +40,7 @@ export default function BlogListing() {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-[0.65rem] tracking-widest uppercase text-[var(--color-bronze)]">
-                      {format(new Date(post.publishDate), "dd MMM yyyy")}
+                      {post.publishedAt ? format(new Date(post.publishedAt), "dd MMM yyyy") : ""}
                     </span>
                     <span className="text-[var(--color-foreground-soft)] text-xs">•</span>
                     <span className="text-xs text-[var(--color-foreground-soft)]">{post.readingTime}</span>
@@ -51,11 +51,11 @@ export default function BlogListing() {
                   <p className="text-sm text-[var(--color-foreground-soft)] max-w-[55ch] leading-relaxed">
                     {post.excerpt}
                   </p>
-                  {post.tags.length > 0 && (
+                  {post.categories && post.categories.length > 0 && (
                     <div className="flex gap-2 mt-3">
-                      {post.tags.map(tag => (
-                        <span key={tag} className="text-[0.6rem] uppercase tracking-widest text-[var(--color-bronze-deep)] bg-[var(--color-stone)] px-3 py-1 rounded-full">
-                          {tag}
+                      {post.categories.map((category: string) => (
+                        <span key={category} className="text-[0.6rem] uppercase tracking-widest text-[var(--color-bronze-deep)] bg-[var(--color-stone)] px-3 py-1 rounded-full">
+                          {category}
                         </span>
                       ))}
                     </div>

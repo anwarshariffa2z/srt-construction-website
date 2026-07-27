@@ -1,5 +1,6 @@
-import { getProjectBySlug, getAllProjectSlugs } from "@/lib/portfolio";
-import ReactMarkdown from "react-markdown";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getProjectBySlug, getAllProjectSlugs, urlFor } from "@/lib/sanity";
+import { PortableText } from "@portabletext/react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
@@ -9,12 +10,14 @@ import { MagneticButton } from "@/components/MagneticButton";
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return getAllProjectSlugs().map((slug) => ({ slug }));
+  const slugs = await getAllProjectSlugs();
+  if (slugs.length === 0) return [{ slug: "coming-soon" }];
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getProjectBySlug(slug);
   if (!project) return {};
   return {
     title: `${project.title} | SRT Constructions Case Study`,
@@ -22,24 +25,34 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-const mdxComponents = {
-  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h2 className="font-serif text-3xl md:text-4xl text-[var(--color-foreground)] mb-6 mt-16 leading-tight" {...props} />,
-  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h3 className="font-serif text-2xl text-[var(--color-foreground)] mb-4 mt-10" {...props} />,
-  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => <p className="text-lg md:text-[1.1rem] text-[var(--color-foreground-soft)] leading-relaxed mb-6" {...props} />,
-  ul: (props: React.HTMLAttributes<HTMLUListElement>) => <ul className="list-disc pl-6 mb-6 space-y-2 text-[var(--color-foreground-soft)]" {...props} />,
-  ol: (props: React.HTMLAttributes<HTMLOListElement>) => <ol className="list-decimal pl-6 mb-6 space-y-2 text-[var(--color-foreground-soft)]" {...props} />,
-  li: (props: React.HTMLAttributes<HTMLLIElement>) => <li className="text-[1.05rem] leading-relaxed" {...props} />,
-  blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => <blockquote className="border-l-4 border-[var(--color-bronze)] pl-6 py-2 my-8 italic text-xl text-[var(--color-foreground-soft)] font-light" {...props} />,
-  strong: (props: React.HTMLAttributes<HTMLElement>) => <strong className="text-[var(--color-foreground)] font-semibold" {...props} />,
-  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => <a className="text-[var(--color-bronze)] underline underline-offset-4 hover:text-[var(--color-bronze-deep)] transition-colors" {...props} />,
-  hr: () => <hr className="border-[var(--color-stone)]/30 my-12" />,
+const portableTextComponents = {
+  block: {
+    h2: ({children}: any) => <h2 className="font-serif text-3xl md:text-4xl text-[var(--color-foreground)] mb-6 mt-16 leading-tight">{children}</h2>,
+    h3: ({children}: any) => <h3 className="font-serif text-2xl text-[var(--color-foreground)] mb-4 mt-10">{children}</h3>,
+    normal: ({children}: any) => <p className="text-lg md:text-[1.1rem] text-[var(--color-foreground-soft)] leading-relaxed mb-6">{children}</p>,
+    blockquote: ({children}: any) => <blockquote className="border-l-4 border-[var(--color-bronze)] pl-6 py-2 my-8 italic text-xl text-[var(--color-foreground-soft)] font-light">{children}</blockquote>,
+  },
+  list: {
+    bullet: ({children}: any) => <ul className="list-disc pl-6 mb-6 space-y-2 text-[var(--color-foreground-soft)]">{children}</ul>,
+    number: ({children}: any) => <ol className="list-decimal pl-6 mb-6 space-y-2 text-[var(--color-foreground-soft)]">{children}</ol>,
+  },
+  listItem: {
+    bullet: ({children}: any) => <li className="text-[1.05rem] leading-relaxed">{children}</li>,
+    number: ({children}: any) => <li className="text-[1.05rem] leading-relaxed">{children}</li>,
+  },
+  marks: {
+    strong: ({children}: any) => <strong className="text-[var(--color-foreground)] font-semibold">{children}</strong>,
+    link: ({value, children}: any) => <a href={value?.href} className="text-[var(--color-bronze)] underline underline-offset-4 hover:text-[var(--color-bronze-deep)] transition-colors">{children}</a>,
+  }
 };
 
 export default async function ProjectCaseStudy({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getProjectBySlug(slug);
   
   if (!project) notFound();
+
+  const imageUrl = project.mainImage ? urlFor(project.mainImage).url() : (project.image || "");
 
   return (
     <main className="min-h-screen bg-[var(--color-background)]">
@@ -47,13 +60,15 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
       {/* Immersive Hero Section */}
       <section className="relative h-[80vh] w-full flex items-end pb-[10vh] px-[6vw]">
         <div className="absolute inset-0 z-0">
-          <ParallaxImage 
-            src={project.image}
-            alt={project.title}
-            priority
-            className="w-full h-full"
-            offset={100}
-          />
+          {imageUrl && (
+            <ParallaxImage 
+              src={imageUrl}
+              alt={project.title}
+              priority
+              className="w-full h-full"
+              offset={100}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-stone-dark)] via-[var(--color-stone-dark)]/60 to-black/70 z-10 pointer-events-none" />
         </div>
         
@@ -103,8 +118,7 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
 
       <section className="px-[6vw] py-[15vh] relative z-20">
         <article className="max-w-[800px] mx-auto prose-custom">
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          <ReactMarkdown components={mdxComponents as any}>{project.content}</ReactMarkdown>
+          {project.body && <PortableText value={project.body} components={portableTextComponents} />}
         </article>
       </section>
 

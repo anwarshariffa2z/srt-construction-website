@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -307,7 +308,7 @@ export default function MaterialsPage() {
         </Reveal>
 
         <div className="border-t border-white/10">
-          {materialsData.map((item, idx) => {
+          {materialsData.map((item: any) => {
             const isExpanded = expandedId === item.id;
             
             return (
@@ -370,7 +371,7 @@ export default function MaterialsPage() {
                                 </tr>
                               </thead>
                               <tbody>
-                                {item.tableData.map((row, rIdx) => (
+                                {item.tableData.map((row: any, rIdx: number) => (
                                   <tr key={rIdx} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                                     <td className="py-4 px-4 text-sm text-[#e5ddcd]">{row.brand}</td>
                                     <td className="py-4 px-4 text-sm text-[#a39a8a]">{row.gradeType}</td>

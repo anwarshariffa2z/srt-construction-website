@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -5,8 +6,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
-import { Project } from "@/lib/portfolio";
-
+export interface Project {
+  slug: string;
+  title: string;
+  category: string;
+  location: string;
+  client?: string;
+  timeline?: string;
+  value?: string;
+  mainImage?: any;
+  image?: string;
+  excerpt: string;
+  completionDate: string;
+  body?: any;
+}
 export default function PortfolioClient({ initialProjects }: { initialProjects: Project[] }) {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [expandedProject, setExpandedProject] = useState<string | null>(null);
@@ -134,7 +147,7 @@ export default function PortfolioClient({ initialProjects }: { initialProjects: 
                           <div className="w-full md:w-2/3">
                             <div className="relative aspect-[16/9] w-full overflow-hidden bg-black/20 group">
                               <Image 
-                                src={project.image}
+                                src={project.image || ""}
                                 alt={project.title}
                                 fill
                                 className="object-cover transition-transform duration-1000 group-hover:scale-105"

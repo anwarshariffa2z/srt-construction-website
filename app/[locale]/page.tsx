@@ -5,11 +5,9 @@ import { StatCountUp } from "@/components/StatCountUp";
 import { MagneticButton } from "@/components/MagneticButton";
 import { Testimonials } from "@/components/Testimonials";
 import Link from "next/link";
-import { getDictionary, Locale } from "@/i18n/dictionaries";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const dict = getDictionary(locale as Locale);
 
   return (
     <main className="bg-[var(--color-background)]">

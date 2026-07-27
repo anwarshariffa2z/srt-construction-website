@@ -1,5 +1,6 @@
-import { getPostBySlug, getAllSlugs } from "@/lib/blog";
-import ReactMarkdown from "react-markdown";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getPostBySlug, getAllPostSlugs } from "@/lib/sanity";
+import { PortableText } from "@portabletext/react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,12 +8,14 @@ import { notFound } from "next/navigation";
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }));
+  const slugs = await getAllPostSlugs();
+  if (slugs.length === 0) return [{ slug: "coming-soon" }];
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return {};
   return {
     title: `${post.title} | SRT Constructions Blog`,
@@ -20,33 +23,38 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-const mdxComponents = {
-  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h1 className="font-serif text-4xl md:text-5xl text-[var(--color-foreground)] mb-8 mt-16 leading-tight" {...props} />,
-  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h2 className="font-serif text-3xl text-[var(--color-foreground)] mb-6 mt-14 leading-tight" {...props} />,
-  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h3 className="font-serif text-2xl text-[var(--color-foreground)] mb-4 mt-10" {...props} />,
-  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => <p className="text-[1.1rem] text-[var(--color-foreground-soft)] leading-relaxed mb-6" {...props} />,
-  ul: (props: React.HTMLAttributes<HTMLUListElement>) => <ul className="list-disc pl-6 mb-6 space-y-2 text-[var(--color-foreground-soft)]" {...props} />,
-  ol: (props: React.HTMLAttributes<HTMLOListElement>) => <ol className="list-decimal pl-6 mb-6 space-y-2 text-[var(--color-foreground-soft)]" {...props} />,
-  li: (props: React.HTMLAttributes<HTMLLIElement>) => <li className="text-[1.05rem] leading-relaxed" {...props} />,
-  blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => <blockquote className="border-l-4 border-[var(--color-bronze)] pl-6 py-2 my-8 italic text-[var(--color-foreground-soft)] bg-[var(--color-stone)]/30 rounded-r-lg pr-4" {...props} />,
-  table: (props: React.HTMLAttributes<HTMLTableElement>) => <div className="overflow-x-auto mb-8"><table className="w-full text-sm border-collapse" {...props} /></div>,
-  th: (props: React.HTMLAttributes<HTMLTableCellElement>) => <th className="text-left py-3 px-4 bg-[var(--color-stone)] text-[var(--color-foreground)] font-semibold border-b border-[var(--color-stone)]" {...props} />,
-  td: (props: React.HTMLAttributes<HTMLTableCellElement>) => <td className="py-3 px-4 border-b border-[var(--color-stone)] text-[var(--color-foreground-soft)]" {...props} />,
-  strong: (props: React.HTMLAttributes<HTMLElement>) => <strong className="text-[var(--color-foreground)] font-semibold" {...props} />,
-  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => <a className="text-[var(--color-bronze)] underline underline-offset-4 hover:text-[var(--color-bronze-deep)] transition-colors" {...props} />,
-  hr: () => <hr className="border-[var(--color-stone)] my-12" />,
+const portableTextComponents = {
+  block: {
+    h1: ({children}: any) => <h1 className="font-serif text-4xl md:text-5xl text-[var(--color-foreground)] mb-8 mt-16 leading-tight">{children}</h1>,
+    h2: ({children}: any) => <h2 className="font-serif text-3xl text-[var(--color-foreground)] mb-6 mt-14 leading-tight">{children}</h2>,
+    h3: ({children}: any) => <h3 className="font-serif text-2xl text-[var(--color-foreground)] mb-4 mt-10">{children}</h3>,
+    normal: ({children}: any) => <p className="text-[1.1rem] text-[var(--color-foreground-soft)] leading-relaxed mb-6">{children}</p>,
+    blockquote: ({children}: any) => <blockquote className="border-l-4 border-[var(--color-bronze)] pl-6 py-2 my-8 italic text-[var(--color-foreground-soft)] bg-[var(--color-stone)]/30 rounded-r-lg pr-4">{children}</blockquote>,
+  },
+  list: {
+    bullet: ({children}: any) => <ul className="list-disc pl-6 mb-6 space-y-2 text-[var(--color-foreground-soft)]">{children}</ul>,
+    number: ({children}: any) => <ol className="list-decimal pl-6 mb-6 space-y-2 text-[var(--color-foreground-soft)]">{children}</ol>,
+  },
+  listItem: {
+    bullet: ({children}: any) => <li className="text-[1.05rem] leading-relaxed">{children}</li>,
+    number: ({children}: any) => <li className="text-[1.05rem] leading-relaxed">{children}</li>,
+  },
+  marks: {
+    strong: ({children}: any) => <strong className="text-[var(--color-foreground)] font-semibold">{children}</strong>,
+    link: ({value, children}: any) => <a href={value?.href} className="text-[var(--color-bronze)] underline underline-offset-4 hover:text-[var(--color-bronze-deep)] transition-colors">{children}</a>,
+  }
 };
 
 export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": post.title,
-    "datePublished": post.publishDate,
+    "datePublished": post.publishedAt,
     "author": {
       "@type": "Organization",
       "name": post.author
@@ -78,10 +86,10 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         <header className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <span className="text-[0.65rem] tracking-widest uppercase text-[var(--color-bronze)]">
-              {format(new Date(post.publishDate), "dd MMMM yyyy")}
+              {post.publishedAt ? format(new Date(post.publishedAt), "dd MMMM yyyy") : ""}
             </span>
             <span className="text-[var(--color-foreground-soft)] text-xs">•</span>
-            <span className="text-xs text-[var(--color-foreground-soft)]">{post.readingTime}</span>
+            <span className="text-xs text-[var(--color-foreground-soft)]">5 min read</span>
           </div>
           <h1 className="font-serif text-[clamp(2.5rem,5vw,4rem)] text-[var(--color-foreground)] font-light leading-[1.1] mb-6">
             {post.title}
@@ -89,11 +97,11 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           <p className="text-lg text-[var(--color-foreground-soft)] leading-relaxed">
             {post.excerpt}
           </p>
-          {post.tags.length > 0 && (
+          {post.categories && post.categories.length > 0 && (
             <div className="flex gap-2 mt-6">
-              {post.tags.map(tag => (
-                <span key={tag} className="text-[0.6rem] uppercase tracking-widest text-[var(--color-bronze-deep)] bg-[var(--color-stone)] px-3 py-1 rounded-full">
-                  {tag}
+              {post.categories.map((category: string) => (
+                <span key={category} className="text-[0.6rem] uppercase tracking-widest text-[var(--color-bronze-deep)] bg-[var(--color-stone)] px-3 py-1 rounded-full">
+                  {category}
                 </span>
               ))}
             </div>
@@ -101,10 +109,9 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           <hr className="border-[var(--color-stone)] mt-10" />
         </header>
 
-        {/* MDX Content */}
+        {/* Portable Text Content */}
         <div className="prose-custom">
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          <ReactMarkdown components={mdxComponents as any}>{post.content}</ReactMarkdown>
+          {post.body && <PortableText value={post.body} components={portableTextComponents} />}
         </div>
 
         {/* Footer CTA */}

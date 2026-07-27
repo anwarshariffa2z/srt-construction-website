@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import PortfolioClient from "./PortfolioClient";
-import { getAllProjects } from "@/lib/portfolio";
+import { getAllProjects, urlFor } from "@/lib/sanity";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +8,12 @@ export const metadata: Metadata = {
   description: "Explore our portfolio of luxury architecture, commercial construction, and bespoke interior design projects across India.",
 };
 
-export default function PortfolioPage() {
-  const projects = getAllProjects();
+export default async function PortfolioPage() {
+  const projectsRaw = await getAllProjects();
+  // Map mainImage to a string image property so client component can use it
+  const projects = projectsRaw.map((p: any) => ({
+    ...p,
+    image: p.mainImage ? urlFor(p.mainImage).url() : (p.image || "")
+  }));
   return <PortfolioClient initialProjects={projects} />;
 }
