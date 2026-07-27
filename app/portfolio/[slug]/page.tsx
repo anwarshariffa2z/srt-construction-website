@@ -1,5 +1,5 @@
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/portfolio";
-import { MDXRemote } from "next-mdx-remote/rsc";
+import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
@@ -101,10 +101,10 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
         </div>
       </section>
 
-      {/* MDX Content Section */}
       <section className="px-[6vw] py-[15vh] relative z-20">
         <article className="max-w-[800px] mx-auto prose-custom">
-          <MDXRemote source={project.content} components={mdxComponents} />
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          <ReactMarkdown components={mdxComponents as any}>{project.content}</ReactMarkdown>
         </article>
       </section>
 

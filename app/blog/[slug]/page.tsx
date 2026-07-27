@@ -1,5 +1,5 @@
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
-import { MDXRemote } from "next-mdx-remote/rsc";
+import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -103,7 +103,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
         {/* MDX Content */}
         <div className="prose-custom">
-          <MDXRemote source={post.content} components={mdxComponents} />
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          <ReactMarkdown components={mdxComponents as any}>{post.content}</ReactMarkdown>
         </div>
 
         {/* Footer CTA */}
