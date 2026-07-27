@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+
 
 export async function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
