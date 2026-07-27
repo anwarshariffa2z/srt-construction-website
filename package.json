@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy": "next build && npx wrangler pages deploy out",
+    "preview": "next build && npx wrangler pages dev out"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.24",
@@ -25,7 +27,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@opennextjs/cloudflare": "^1.20.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

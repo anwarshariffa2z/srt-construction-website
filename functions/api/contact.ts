@@ -1,17 +1,16 @@
-import { NextResponse } from 'next/server';
-
-export async function POST(req: Request) {
+// @ts-nocheck
+export async function onRequestPost({ request, env }) {
   try {
-    const apiKey = process.env.RESEND_API_KEY;
+    const apiKey = env.RESEND_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: "RESEND_API_KEY is missing from environment variables." }, { status: 500 });
+      return new Response(JSON.stringify({ error: "RESEND_API_KEY is missing." }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
 
-    const body = await req.json();
+    const body = await request.json();
     const { name, email, phone, projectType, message } = body;
 
     if (!name || !email || !message) {
-      return NextResponse.json({ error: "Name, email, and message are required." }, { status: 400 });
+      return new Response(JSON.stringify({ error: "Name, email, and message are required." }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
     const response = await fetch('https://api.resend.com/emails', {
@@ -39,12 +38,11 @@ export async function POST(req: Request) {
     const data = await response.json();
 
     if (!response.ok) {
-      return NextResponse.json({ error: data }, { status: 400 });
+      return new Response(JSON.stringify({ error: data }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (error: unknown) {
-    console.error("Contact API Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return new Response(JSON.stringify({ data }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 const SYSTEM_PROMPT = `
 You are the Chief AI Sales Engineer for SRT Constructions, a premium construction, architecture, and interior design firm based in Chennai, Tamil Nadu.
 Your job is to answer client questions professionally, accurately, and persuasively using ONLY the knowledge provided below. 
@@ -43,10 +44,10 @@ RULES FOR ANSWERING:
 3. Keep responses concise (under 3-4 paragraphs) unless providing a detailed breakdown.
 `;
 
-export async function POST(req: Request) {
+export async function onRequestPost({ request, env }) {
   try {
-    const { messages } = await req.json();
-    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    const { messages } = await request.json();
+    const apiKey = env.GOOGLE_GENERATIVE_AI_API_KEY;
 
     if (!apiKey) {
       return new Response(
@@ -55,8 +56,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const contents = messages.map((m: any) => ({
+    const contents = messages.map((m) => ({
       role: m.role === 'user' ? 'user' : 'model',
       parts: [{ text: m.content }]
     }));
@@ -91,13 +91,10 @@ export async function POST(req: Request) {
           buffer = buffer.slice(boundary + 1);
           
           if (line.startsWith('"text": "')) {
-            // Very simple string extraction for SSE chunks from Gemini to avoid complex JSON parsing of partial streams
             const textMatch = line.match(/"text":\s*"(.*)"/);
             if (textMatch && textMatch[1]) {
               try {
-                // Decode the JSON-encoded string chunk from Gemini
                 const decodedText = JSON.parse(`"${textMatch[1]}"`);
-                // Format for Vercel AI SDK: 0:"<json-encoded text>"\n
                 const vercelPayload = `0:${JSON.stringify(decodedText)}\n`;
                 controller.enqueue(encoder.encode(vercelPayload));
               } catch (e) {
@@ -108,12 +105,8 @@ export async function POST(req: Request) {
           boundary = buffer.indexOf('\n');
         }
       },
-      flush(controller) {
-        // flush any remaining buffer if needed
-      }
+      flush(controller) {}
     });
-
-    if (!response.body) throw new Error("No response body");
 
     return new Response(response.body.pipeThrough(stream), {
       headers: {
@@ -122,8 +115,7 @@ export async function POST(req: Request) {
       }
     });
 
-  } catch (error: unknown) {
-    console.error("Chat API Error:", error);
+  } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(`AI_STREAM_ERROR: ${errorMessage}`, { status: 500 });
   }
