@@ -55,11 +55,8 @@ export async function POST(req: Request) {
     // Check if API key exists
     if (!apiKey) {
       return new Response(
-        JSON.stringify({
-          error: "API Key Missing",
-          message: "The AI Sales Engineer is currently offline because the GOOGLE_GENERATIVE_AI_API_KEY is not set in the environment variables."
-        }), 
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        "API_KEY_MISSING: The AI Sales Engineer is currently offline because the GOOGLE_GENERATIVE_AI_API_KEY is not set in the environment variables.", 
+        { status: 500, headers: { 'Content-Type': 'text/plain' } }
       );
     }
 
@@ -79,11 +76,8 @@ export async function POST(req: Request) {
     console.error("Chat API Error:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(
-      JSON.stringify({ 
-        error: "An error occurred while processing your request.",
-        message: errorMessage
-      }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      `AI_STREAM_ERROR: ${errorMessage}`,
+      { status: 500, headers: { 'Content-Type': 'text/plain' } }
     );
   }
 }
