@@ -1,9 +1,10 @@
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/portfolio";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import { ParallaxImage } from "@/components/ParallaxImage";
+import { MagneticButton } from "@/components/MagneticButton";
 
 export const dynamic = "force-dynamic";
 
@@ -46,17 +47,17 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
       {/* Immersive Hero Section */}
       <section className="relative h-[80vh] w-full flex items-end pb-[10vh] px-[6vw]">
         <div className="absolute inset-0 z-0">
-          <Image 
+          <ParallaxImage 
             src={project.image}
             alt={project.title}
-            fill
             priority
-            className="object-cover"
+            className="w-full h-full"
+            offset={100}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-background)] via-[var(--color-background)]/80 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-background)] via-[var(--color-background)]/80 to-black/30 z-10 pointer-events-none" />
         </div>
         
-        <div className="relative z-10 w-full max-w-[1200px] mx-auto">
+        <div className="relative z-20 w-full max-w-[1200px] mx-auto">
           <Link href="/portfolio" className="text-[0.65rem] tracking-[0.25em] uppercase text-[var(--color-bronze)] hover:text-white transition-colors mb-8 inline-block">
             &larr; Back to Portfolio
           </Link>
@@ -75,7 +76,7 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
       </section>
 
       {/* Project Metadata Grid */}
-      <section className="px-[6vw] py-12 border-b border-[var(--color-stone)]/30 bg-[var(--color-stone-dark)]/50">
+      <section className="px-[6vw] py-12 border-b border-[var(--color-stone)]/30 bg-[var(--color-stone-dark)]/50 relative z-20">
         <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
           <div className="flex flex-col gap-2">
             <span className="text-[0.65rem] tracking-[0.2em] uppercase text-white/40">Location</span>
@@ -101,24 +102,23 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
       </section>
 
       {/* MDX Content Section */}
-      <section className="px-[6vw] py-[15vh]">
+      <section className="px-[6vw] py-[15vh] relative z-20">
         <article className="max-w-[800px] mx-auto prose-custom">
           <MDXRemote source={project.content} components={mdxComponents} />
         </article>
       </section>
 
       {/* Next Project / CTA */}
-      <section className="px-[6vw] py-[15vh] border-t border-[var(--color-stone)]/30 text-center bg-[var(--color-stone-dark)]">
-        <div className="max-w-[800px] mx-auto">
+      <section className="px-[6vw] py-[15vh] border-t border-[var(--color-stone)]/30 text-center bg-[var(--color-stone-dark)] relative z-20">
+        <div className="max-w-[800px] mx-auto flex flex-col items-center">
           <h2 className="font-serif text-4xl text-white mb-6">Build Your Vision With Us</h2>
           <p className="text-white/60 mb-10 text-lg">
             Ready to bring an uncompromising level of engineering and design to your next project?
           </p>
-          <Link 
-            href="/contact"
-            className="inline-block px-10 py-5 bg-[var(--color-bronze)] text-white text-[0.75rem] tracking-[0.25em] uppercase hover:bg-[var(--color-bronze-deep)] transition-colors"
-          >
-            Start a Conversation
+          <Link href="/contact" className="inline-block">
+            <MagneticButton>
+              Start a Conversation
+            </MagneticButton>
           </Link>
         </div>
       </section>

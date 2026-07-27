@@ -6,6 +6,7 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ChatWidget } from "@/components/ChatWidget";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
 const inter = Inter({
@@ -84,15 +85,17 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen relative bg-[var(--color-background)]">
-        <CustomCursor />
-        <GrainOverlay />
-        <Header />
-        
-        {children}
-        
-        <Footer />
-        <WhatsAppButton />
-        <ChatWidget />
+        <SmoothScroll>
+          <CustomCursor />
+          <GrainOverlay />
+          <Header />
+          
+          {children}
+          
+          <Footer />
+          <WhatsAppButton />
+          <ChatWidget />
+        </SmoothScroll>
       </body>
     </html>
   );

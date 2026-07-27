@@ -1,7 +1,7 @@
 "use client";
 
 import { Reveal } from "@/components/Reveal";
-// Unused MagneticButton import removed
+import { MagneticButton } from "@/components/MagneticButton";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -109,15 +109,16 @@ export default function Contact() {
                   </div>
 
                   <div className="pt-6 flex items-center gap-6">
-                    <button 
+                    <MagneticButton
                       type="submit"
                       disabled={formState === "submitting"}
-                      className="group relative px-8 py-4 bg-transparent text-white uppercase tracking-[0.2em] text-xs transition-colors hover:text-black overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="!bg-transparent !px-0 !py-0 w-full hover:!bg-transparent"
                     >
-                      <span className="relative z-10">{formState === "submitting" ? "Sending..." : "Submit Inquiry"}</span>
-                      <div className="absolute inset-0 bg-[#c9a468] translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 z-0" />
-                      <div className="absolute inset-0 border border-white/30 group-hover:border-transparent transition-colors z-0" />
-                    </button>
+                      <div className="group relative px-8 py-4 w-full bg-transparent text-white uppercase tracking-[0.2em] text-xs transition-colors hover:text-black overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed border border-white/30 hover:border-transparent rounded-full flex items-center justify-center">
+                        <span className="relative z-10">{formState === "submitting" ? "Sending..." : "Submit Inquiry"}</span>
+                        <div className="absolute inset-0 bg-[#c9a468] translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 z-0" />
+                      </div>
+                    </MagneticButton>
                   </div>
                 </motion.form>
               )}

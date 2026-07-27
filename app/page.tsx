@@ -4,6 +4,7 @@ import { CraftPillars } from "@/components/CraftPillars";
 import { StatCountUp } from "@/components/StatCountUp";
 import { MagneticButton } from "@/components/MagneticButton";
 import { Testimonials } from "@/components/Testimonials";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -116,9 +117,11 @@ export default function Home() {
             <p className="mt-6 mb-12 text-[var(--color-foreground-soft)] max-w-[40ch] mx-auto">
               Skip the middlemen. Let our architects, engineers, builders, and contractors look at your project as one unified team.
             </p>
-            <MagneticButton>
-              Start a Conversation
-            </MagneticButton>
+            <Link href="/contact" className="inline-block">
+              <MagneticButton>
+                Start a Conversation
+              </MagneticButton>
+            </Link>
           </Reveal>
         </div>
       </footer>
