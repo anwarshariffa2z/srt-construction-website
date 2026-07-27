@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
 import Script from "next/script";
+import { Preloader } from "@/components/Preloader";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import { GrainOverlay } from "@/components/GrainOverlay";
 import { Header } from "@/components/Header";
@@ -124,6 +126,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen relative bg-[var(--color-background)]">
         <SmoothScroll>
+          <Preloader />
           <CustomCursor />
           <GrainOverlay />
           <Header />
@@ -135,6 +138,7 @@ export default function RootLayout({
           <ChatWidget />
         </SmoothScroll>
 
+        <JsonLd />
         {/* Cloudflare Web Analytics (Placeholder Token) */}
         <Script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "YOUR_CLOUDFLARE_ANALYTICS_TOKEN_HERE"}' strategy="afterInteractive" />
       </body>

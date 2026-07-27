@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { CostEstimator } from "@/components/CostEstimator";
 import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
@@ -77,6 +78,8 @@ export default function Services() {
           ))}
         </div>
       </div>
+      
+      <CostEstimator />
     </main>
   );
 }
