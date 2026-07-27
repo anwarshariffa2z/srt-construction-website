@@ -54,7 +54,7 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
             className="w-full h-full"
             offset={100}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-background)] via-[var(--color-background)]/80 to-black/30 z-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-stone-dark)] via-[var(--color-stone-dark)]/60 to-black/70 z-10 pointer-events-none" />
         </div>
         
         <div className="relative z-20 w-full max-w-[1200px] mx-auto">
@@ -76,7 +76,7 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
       </section>
 
       {/* Project Metadata Grid */}
-      <section className="px-[6vw] py-12 border-b border-[var(--color-stone)]/30 bg-[var(--color-stone-dark)]/50 relative z-20">
+      <section className="px-[6vw] py-12 border-b border-[var(--color-stone)]/30 bg-[var(--color-stone-dark)] relative z-20">
         <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
           <div className="flex flex-col gap-2">
             <span className="text-[0.65rem] tracking-[0.2em] uppercase text-white/40">Location</span>
