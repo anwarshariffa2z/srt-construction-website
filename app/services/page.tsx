@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { Reveal } from "@/components/Reveal";
+
+export const metadata: Metadata = {
+  title: "Our Services",
+  description: "Turnkey construction, architectural design, structural engineering, and interior design.",
+};
 import Image from "next/image";
 
 const SERVICES = [

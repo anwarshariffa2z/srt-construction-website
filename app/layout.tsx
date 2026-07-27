@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import { GrainOverlay } from "@/components/GrainOverlay";
 import { Header } from "@/components/Header";
@@ -23,8 +24,45 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "SRT Constructions | Build Beyond",
-  description: "Commercial, Industrial, and Luxury Residential Construction designed, engineered, and built by one team.",
+  metadataBase: new URL('https://srtconstructions.in'),
+  title: {
+    default: "SRT Constructions | Premium Builders in Chennai",
+    template: "%s | SRT Constructions",
+  },
+  description: "Commercial, Industrial, and Luxury Residential Construction designed, engineered, and built by one team in Chennai, Tamil Nadu.",
+  openGraph: {
+    title: "SRT Constructions | Premium Builders in Chennai",
+    description: "Commercial, Industrial, and Luxury Residential Construction designed, engineered, and built by one team in Chennai, Tamil Nadu.",
+    url: 'https://srtconstructions.in',
+    siteName: 'SRT Constructions',
+    images: [
+      {
+        url: '/assets/hero.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'SRT Constructions',
+      },
+    ],
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SRT Constructions | Premium Builders',
+    description: 'Commercial, Industrial, and Luxury Residential Construction designed, engineered, and built by one team.',
+    images: ['/assets/hero.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -96,6 +134,9 @@ export default function RootLayout({
           <WhatsAppButton />
           <ChatWidget />
         </SmoothScroll>
+
+        {/* Cloudflare Web Analytics (Placeholder Token) */}
+        <Script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "YOUR_CLOUDFLARE_ANALYTICS_TOKEN_HERE"}' strategy="afterInteractive" />
       </body>
     </html>
   );

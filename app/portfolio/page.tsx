@@ -3,7 +3,7 @@ import { getAllProjects } from "@/lib/portfolio";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Portfolio | SRT Constructions",
+  title: "Portfolio",
   description: "Explore our portfolio of luxury architecture, commercial construction, and bespoke interior design projects across India.",
 };
 

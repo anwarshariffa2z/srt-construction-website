@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { Reveal } from "@/components/Reveal";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Learn about SRT Constructions, our history, our engineering process, and the master craftsmen behind our premium builds.",
+};
 import { Testimonials } from "@/components/Testimonials";
 
 const PROCESS = [
