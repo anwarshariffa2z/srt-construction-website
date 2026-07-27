@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import { ParallaxImage } from "@/components/ParallaxImage";
 import { MagneticButton } from "@/components/MagneticButton";
 
-
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({ slug }));
