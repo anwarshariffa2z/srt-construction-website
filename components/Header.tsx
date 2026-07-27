@@ -36,8 +36,8 @@ export function Header() {
           <Image 
             src="/assets/srt_logo.png" 
             alt="SRT Constructions Logo" 
-            width={160} 
-            height={60} 
+            width={120} 
+            height={45} 
             className="object-contain"
           />
         </Link>
