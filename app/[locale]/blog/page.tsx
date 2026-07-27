@@ -2,32 +2,35 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/sanity";
 import { format } from "date-fns";
+import { getDictionary } from "@/i18n/dictionaries";
 
 export const metadata = {
   title: "Blog | SRT Constructions",
   description: "Expert insights on construction, architecture, materials, and building in Chennai and Tamil Nadu.",
 };
 
-export default async function BlogListing() {
+export default async function BlogListing({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const dict = getDictionary(locale);
   const posts = await getAllPosts();
 
   return (
     <main className="min-h-screen bg-[var(--color-background)] pt-[25vh] pb-[15vh] px-[6vw]">
       <div className="max-w-[900px] mx-auto">
         <div className="text-[0.66rem] tracking-[0.34em] uppercase text-[var(--color-bronze)] mb-6 text-center">
-          Knowledge & Insights
+          {dict.blog.eyebrow}
         </div>
         <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] text-[var(--color-foreground)] font-light leading-[1.05] mb-6 text-center">
-          The SRT Journal.
+          {dict.blog.headline}
         </h1>
         <p className="text-center text-[var(--color-foreground-soft)] mb-20 max-w-[50ch] mx-auto">
-          Transparent, expert-driven articles on construction costs, materials, approvals, and architectural best practices in Tamil Nadu.
+          {dict.blog.desc}
         </p>
 
         {posts.length === 0 ? (
           <div className="text-center text-[var(--color-foreground-soft)] py-20">
-            <p className="font-serif text-2xl mb-4">Coming Soon</p>
-            <p>Our first articles are being prepared. Check back shortly.</p>
+            <p className="font-serif text-2xl mb-4">{dict.blog.comingSoon}</p>
+            <p>{dict.blog.comingSoonDesc}</p>
           </div>
         ) : (
           <div className="flex flex-col border-t border-[var(--color-stone)]">

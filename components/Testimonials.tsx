@@ -1,37 +1,48 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Reveal } from "@/components/Reveal";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const TESTIMONIALS = [
-  {
-    quote: "SRT Constructions delivered our factory in Oragadam 3 weeks ahead of a very aggressive schedule. Their in-house machinery and complete lack of sub-contractor delays is why we'll use them again.",
-    author: "Rakesh Menon",
-    title: "Operations Director, TechForge Industries"
-  },
-  {
-    quote: "Finding a firm that actually understands luxury finishes in Chennai is rare. They managed the entire lifecycle of our ECR villa—from structural design to the final Italian marble polishing. True professionals.",
-    author: "Dr. Ananya S.",
-    title: "Residential Client"
-  },
-  {
-    quote: "The sheer scale at which they operate is impressive. We handed them a complex commercial blueprint, and their structural engineers over-delivered on safety while maintaining the architect's aesthetic vision.",
-    author: "Vikram Raj",
-    title: "Principal Architect, VR Design Studio"
-  }
-];
+interface TestimonialsProps {
+  dict?: any;
+}
 
-export function Testimonials() {
+export function Testimonials({ dict }: TestimonialsProps) {
   const [active, setActive] = useState(0);
+
+  const fallback = {
+    eyebrow: "Client Testimonials",
+    headline: "Word of Mouth.",
+    items: [
+      {
+        quote: "SRT Constructions delivered our factory in Oragadam 3 weeks ahead of a very aggressive schedule. Their in-house machinery and complete lack of sub-contractor delays is why we'll use them again.",
+        author: "Rakesh Menon",
+        title: "Operations Director, TechForge Industries"
+      },
+      {
+        quote: "Finding a firm that actually understands luxury finishes in Chennai is rare. They managed the entire lifecycle of our ECR villa—from structural design to the final Italian marble polishing. True professionals.",
+        author: "Dr. Ananya S.",
+        title: "Residential Client"
+      },
+      {
+        quote: "The sheer scale at which they operate is impressive. We handed them a complex commercial blueprint, and their structural engineers over-delivered on safety while maintaining the architect's aesthetic vision.",
+        author: "Vikram Raj",
+        title: "Principal Architect, VR Design Studio"
+      }
+    ]
+  };
+
+  const d = dict || fallback;
 
   return (
     <section className="bg-[var(--color-stone-dark)] text-white py-[15vh] px-[6vw] overflow-hidden">
       <div className="max-w-[1200px] mx-auto">
         <Reveal>
-          <div className="text-[0.66rem] tracking-[0.34em] uppercase text-[#c9a468] mb-6 text-center">Client Testimonials</div>
+          <div className="text-[0.66rem] tracking-[0.34em] uppercase text-[#c9a468] mb-6 text-center">{d.eyebrow}</div>
           <h2 className="font-serif font-light text-[clamp(2.5rem,5vw,4.5rem)] text-center mb-16">
-            Word of Mouth.
+            {d.headline}
           </h2>
         </Reveal>
 
@@ -46,14 +57,14 @@ export function Testimonials() {
               className="absolute w-full max-w-[800px] text-center"
             >
               <p className="font-serif text-[clamp(1.5rem,3vw,2.2rem)] leading-snug mb-8 font-light italic">
-                &quot;{TESTIMONIALS[active].quote}&quot;
+                &quot;{d.items[active].quote}&quot;
               </p>
               <div>
                 <div className="text-sm uppercase tracking-widest text-white/90 mb-1">
-                  {TESTIMONIALS[active].author}
+                  {d.items[active].author}
                 </div>
                 <div className="text-xs text-[#c9a468]">
-                  {TESTIMONIALS[active].title}
+                  {d.items[active].title}
                 </div>
               </div>
             </motion.div>
@@ -61,7 +72,7 @@ export function Testimonials() {
         </div>
 
         <div className="flex justify-center gap-4 mt-12">
-          {TESTIMONIALS.map((_, i) => (
+          {d.items.map((_: any, i: number) => (
             <button
               key={i}
               onClick={() => setActive(i)}

@@ -1,10 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
-export function CraftPillars() {
+interface CraftPillarsProps {
+  dict?: any;
+}
+
+export function CraftPillars({ dict }: CraftPillarsProps) {
   const containerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -33,6 +38,20 @@ export function CraftPillars() {
   const dot3Opacity = useTransform(scrollYProgress, [0.5, 0.6, 0.75], [0.25, 1, 0.25]);
   const dot4Opacity = useTransform(scrollYProgress, [0.75, 0.85], [0.25, 1]);
 
+  const fallback = {
+    eyebrow: "Core Competencies",
+    cont: "Commercial & Industrial",
+    contDesc: "From million-square-foot logistics parks to highly specialized factory environments. We deliver scale without sacrificing precision.",
+    arch: "Luxury Residential",
+    archDesc: "Bespoke homes crafted for those who demand the impossible. Our residential division treats concrete and steel like fine cabinetry.",
+    int: "Turnkey MEP & PMC",
+    intDesc: "Complete project management and invisible mechanical engineering. We take ownership from the first permit to the final coat of paint.",
+    const: "Contracting",
+    constDesc: "Master builders capable of mobilizing massive resources. We execute large-scale projects on aggressive timelines with relentless quality control."
+  };
+
+  const d = dict || fallback;
+
   return (
     <section id="craft" ref={containerRef} className="relative h-[450vh]">
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#141009]">
@@ -55,7 +74,7 @@ export function CraftPillars() {
 
         {/* Top Eyebrow */}
         <div className="absolute top-[16vh] left-[8vw] z-10 text-[0.66rem] tracking-[0.34em] uppercase text-[#c9a468]">
-          Core Competencies
+          {d.eyebrow}
         </div>
 
         {/* Pillar 1 */}
@@ -65,10 +84,10 @@ export function CraftPillars() {
         >
           <div className="font-serif italic text-base text-[#c9a468] tracking-[0.2em]">I.</div>
           <h3 className="font-serif font-normal text-[clamp(2rem,5vw,4.4rem)] leading-[1.05] my-[0.7rem] text-shadow-pillar">
-            Commercial & Industrial
+            {d.cont}
           </h3>
           <p className="text-white/80 max-w-[46ch] text-base">
-            From million-square-foot logistics parks to highly specialized factory environments. We deliver scale without sacrificing precision.
+            {d.contDesc}
           </p>
         </motion.div>
 
@@ -79,10 +98,10 @@ export function CraftPillars() {
         >
           <div className="font-serif italic text-base text-[#c9a468] tracking-[0.2em]">II.</div>
           <h3 className="font-serif font-normal text-[clamp(2rem,5vw,4.4rem)] leading-[1.05] my-[0.7rem] text-shadow-pillar">
-            Luxury Residential
+            {d.arch}
           </h3>
           <p className="text-white/80 max-w-[46ch] text-base">
-            Bespoke homes crafted for those who demand the impossible. Our residential division treats concrete and steel like fine cabinetry.
+            {d.archDesc}
           </p>
         </motion.div>
 
@@ -93,10 +112,10 @@ export function CraftPillars() {
         >
           <div className="font-serif italic text-base text-[#c9a468] tracking-[0.2em]">III.</div>
           <h3 className="font-serif font-normal text-[clamp(2rem,5vw,4.4rem)] leading-[1.05] my-[0.7rem] text-shadow-pillar">
-            Turnkey MEP & PMC
+            {d.int}
           </h3>
           <p className="text-white/80 max-w-[46ch] text-base">
-            Complete project management and invisible mechanical engineering. We take ownership from the first permit to the final coat of paint.
+            {d.intDesc}
           </p>
         </motion.div>
 
@@ -107,10 +126,10 @@ export function CraftPillars() {
         >
           <div className="font-serif italic text-base text-[#c9a468] tracking-[0.2em]">IV.</div>
           <h3 className="font-serif font-normal text-[clamp(2rem,5vw,4.4rem)] leading-[1.05] my-[0.7rem] text-shadow-pillar">
-            Contracting
+            {d.const}
           </h3>
           <p className="text-white/80 max-w-[46ch] text-base">
-            Master builders capable of mobilizing massive resources. We execute large-scale projects on aggressive timelines with relentless quality control.
+            {d.constDesc}
           </p>
         </motion.div>
 

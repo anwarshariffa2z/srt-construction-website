@@ -20,7 +20,7 @@ export interface Project {
   completionDate: string;
   body?: any;
 }
-export default function PortfolioClient({ initialProjects }: { initialProjects: Project[] }) {
+export default function PortfolioClient({ initialProjects, dict }: { initialProjects: Project[], dict: any }) {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [expandedProject, setExpandedProject] = useState<string | null>(null);
 
@@ -59,9 +59,9 @@ export default function PortfolioClient({ initialProjects }: { initialProjects: 
         
         {/* Header */}
         <Reveal>
-          <div className="text-[0.66rem] tracking-[0.34em] uppercase text-[#c9a468] mb-6">Portfolio</div>
+          <div className="text-[0.66rem] tracking-[0.34em] uppercase text-[#c9a468] mb-6">{dict.portfolio.eyebrow}</div>
           <h1 className="font-serif text-[clamp(3rem,8vw,7rem)] text-white font-light tracking-wide mb-24">
-            Selected Works
+            {dict.portfolio.headline}
           </h1>
         </Reveal>
 
@@ -130,7 +130,7 @@ export default function PortfolioClient({ initialProjects }: { initialProjects: 
                           {/* Details */}
                           <div className="w-full md:w-1/3 flex flex-col justify-between">
                             <div>
-                                <h4 className="text-[0.65rem] tracking-[0.25em] uppercase text-white/40 mb-4">Project Overview</h4>
+                                <h4 className="text-[0.65rem] tracking-[0.25em] uppercase text-white/40 mb-4">{dict.portfolio.overview}</h4>
                                 <p className="text-[1.05rem] text-white/80 leading-relaxed font-light mb-8">
                                 {project.excerpt}
                                 </p>
@@ -140,7 +140,7 @@ export default function PortfolioClient({ initialProjects }: { initialProjects: 
                                 className="inline-block px-6 py-3 border border-white/30 text-white text-[0.65rem] tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-colors w-max"
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                View Full Case Study &rarr;
+                                {dict.portfolio.viewCaseStudy}
                             </Link>
                           </div>
                           {/* Image */}
