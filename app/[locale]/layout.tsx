@@ -10,7 +10,7 @@ import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ChatWidgetWrapper } from "@/components/ChatWidgetWrapper";
 import { SmoothScroll } from "@/components/SmoothScroll";
-import "./globals.css";
+import "../globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -67,11 +67,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'ta' }];
+}
+
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -117,7 +124,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${inter.variable} ${cormorant.variable} antialiased`}>
+    <html lang={locale} className={`${inter.variable} ${cormorant.variable} antialiased`}>
       <head>
         <script
           type="application/ld+json"
@@ -133,7 +140,7 @@ export default function RootLayout({
           
           {children}
           
-          <Footer />
+          <Footer locale={locale} />
           <WhatsAppButton />
           <ChatWidgetWrapper />
         </SmoothScroll>

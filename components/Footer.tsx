@@ -1,7 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getDictionary, Locale } from "@/i18n/dictionaries";
 
-export function Footer() {
+export function Footer({ locale }: { locale: string }) {
+  const dict = getDictionary(locale as Locale);
+
   return (
     <footer className="bg-[#1a1712] text-white/80 py-16 px-[6vw] border-t border-white/10">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -23,13 +26,13 @@ export function Footer() {
         <div>
           <h4 className="font-serif text-xl text-white mb-6">Quick Links</h4>
           <ul className="space-y-3 text-sm">
-            <li><Link href="/" className="hover:text-[#c9a468] transition-colors">Home</Link></li>
-            <li><Link href="/portfolio" className="hover:text-[#c9a468] transition-colors">Portfolio</Link></li>
-            <li><Link href="/services" className="hover:text-[#c9a468] transition-colors">Services</Link></li>
-            <li><Link href="/materials" className="hover:text-[#c9a468] transition-colors">Materials</Link></li>
-            <li><Link href="/about" className="hover:text-[#c9a468] transition-colors">About Us</Link></li>
-            <li><Link href="/faq" className="hover:text-[#c9a468] transition-colors">FAQ</Link></li>
-            <li><Link href="/blog" className="hover:text-[#c9a468] transition-colors">Blog</Link></li>
+            <li><Link href={`/${locale}`} className="hover:text-[#c9a468] transition-colors">Home</Link></li>
+            <li><Link href={`/${locale}/portfolio`} className="hover:text-[#c9a468] transition-colors">{dict.nav.portfolio}</Link></li>
+            <li><Link href={`/${locale}/services`} className="hover:text-[#c9a468] transition-colors">{dict.nav.services}</Link></li>
+            <li><Link href={`/${locale}/materials`} className="hover:text-[#c9a468] transition-colors">{dict.nav.materials}</Link></li>
+            <li><Link href={`/${locale}/about`} className="hover:text-[#c9a468] transition-colors">{dict.nav.about}</Link></li>
+            <li><Link href={`/${locale}/faq`} className="hover:text-[#c9a468] transition-colors">{dict.nav.faq}</Link></li>
+            <li><Link href={`/${locale}/blog`} className="hover:text-[#c9a468] transition-colors">{dict.nav.blog}</Link></li>
           </ul>
         </div>
 
@@ -62,7 +65,7 @@ export function Footer() {
               RERA Reg: TN/##/Building/####/2026
             </li>
             <li className="text-xs text-white/40">
-              &copy; {new Date().getFullYear()} SRT Constructions. <br/>All Rights Reserved.
+              &copy; {new Date().getFullYear()} SRT Constructions. <br/>{dict.footer.rights}
             </li>
           </ul>
         </div>

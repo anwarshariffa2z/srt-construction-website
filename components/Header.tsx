@@ -5,9 +5,13 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { getDictionary, Locale } from "@/i18n/dictionaries";
 
 export function Header() {
   const pathname = usePathname();
+  const currentLocale = (pathname.startsWith("/ta") ? "ta" : "en") as Locale;
+  const dict = getDictionary(currentLocale);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Prevent scrolling when mobile menu is open
@@ -20,20 +24,20 @@ export function Header() {
   }, [mobileMenuOpen]);
 
   const NAV_LINKS = [
-    { name: "Portfolio", path: "/portfolio" },
-    { name: "About", path: "/about" },
-    { name: "Services", path: "/services" },
-    { name: "Materials", path: "/materials" },
-    { name: "FAQ", path: "/faq" },
-    { name: "Blog", path: "/blog" },
-    { name: "Consultation", path: "/contact" },
+    { name: dict.nav.portfolio, path: `/${currentLocale}/portfolio` },
+    { name: dict.nav.about, path: `/${currentLocale}/about` },
+    { name: dict.nav.services, path: `/${currentLocale}/services` },
+    { name: dict.nav.materials, path: `/${currentLocale}/materials` },
+    { name: dict.nav.faq, path: `/${currentLocale}/faq` },
+    { name: dict.nav.blog, path: `/${currentLocale}/blog` },
+    { name: dict.nav.contact, path: `/${currentLocale}/contact` },
   ];
 
   return (
     <>
       <nav className={`fixed top-0 left-0 right-0 z-[100] flex justify-between items-center px-[5vw] py-6`}>
         <Link 
-          href="/" 
+          href={`/${currentLocale}`} 
           className="transition-opacity hover:opacity-80 relative z-[101] bg-white/90 p-2 rounded-lg backdrop-blur-sm shadow-md" 
           onClick={() => setMobileMenuOpen(false)}
         >
@@ -47,7 +51,7 @@ export function Header() {
         </Link>
         
         {/* Desktop Nav */}
-        <div className="hidden md:flex gap-10 relative z-[101] mix-blend-difference text-white">
+        <div className="hidden md:flex gap-10 items-center relative z-[101] mix-blend-difference text-white">
           {NAV_LINKS.map((link) => (
             <Link 
               key={link.path}
@@ -57,6 +61,7 @@ export function Header() {
               {link.name}
             </Link>
           ))}
+          <LanguageSwitcher />
         </div>
 
         {/* Mobile Hamburger Button */}
