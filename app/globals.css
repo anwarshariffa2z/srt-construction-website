@@ -45,3 +45,10 @@
     text-shadow: 0 3px 36px rgba(0, 0, 0, 0.65), 0 1px 6px rgba(0, 0, 0, 0.35);
   }
 }
+
+/* Excalidraw SVG Resets against Tailwind base */
+.excalidraw svg {
+  display: initial !important;
+  vertical-align: initial !important;
+  max-width: initial !important;
+}

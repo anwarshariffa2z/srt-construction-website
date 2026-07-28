@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
+import "@excalidraw/excalidraw/index.css";
 
 // Dynamically import Excalidraw to prevent SSR window is not defined errors
 const Excalidraw = dynamic(
