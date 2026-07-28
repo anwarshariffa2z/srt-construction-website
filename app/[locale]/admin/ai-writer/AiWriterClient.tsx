@@ -5,8 +5,15 @@
 
 import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
-import { publishToSanity } from "./actions";
 import { MagneticButton } from "@/components/MagneticButton";
+import { createClient } from "@sanity/client";
+
+const sanityClient = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'your-project-id',
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01',
+  useCdn: false,
+});
 
 export default function AiWriterClient() {
   const [topic, setTopic] = useState("");
@@ -31,12 +38,31 @@ export default function AiWriterClient() {
     setPublishing(true);
     setPublishResult(null);
     try {
-      const res = await publishToSanity(topic || "AI Generated Blog Post", lastMessage.content);
-      if (res.success) {
-        setPublishResult(`Success! Post published to Sanity (ID: ${res.id})`);
-      } else {
-        setPublishResult(`Error: ${res.error}`);
-      }
+      const token = process.env.NEXT_PUBLIC_SANITY_API_TOKEN;
+      if (!token) throw new Error("Missing NEXT_PUBLIC_SANITY_API_TOKEN");
+
+      const title = topic || "AI Generated Blog Post";
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+
+      // Use a new client instance that includes the token for writes
+      const writeClient = sanityClient.withConfig({ token });
+
+      const res = await writeClient.create({
+        _type: 'post',
+        title: title,
+        slug: { _type: 'slug', current: slug },
+        publishedAt: new Date().toISOString(),
+        excerpt: lastMessage.content.substring(0, 150) + "...",
+        body: [
+          {
+            _type: 'block',
+            style: 'normal',
+            children: [{ _type: 'span', marks: [], text: lastMessage.content }]
+          }
+        ]
+      });
+
+      setPublishResult(`Success! Post published to Sanity (ID: ${res._id})`);
     } catch (e: any) {
       setPublishResult(`Error: ${e.message}`);
     }
