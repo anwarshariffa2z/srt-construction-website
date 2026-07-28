@@ -8,6 +8,9 @@ export const dictionaries = {
       blog: "Blog",
       contact: "Get in Touch",
       faq: "FAQ",
+      studio: "Studio",
+      sketch: "Sketch",
+      portal: "Portal",
     },
     footer: {
       rights: "All rights reserved.",
@@ -438,6 +441,9 @@ export const dictionaries = {
       blog: "வலைப்பதிவு",
       contact: "தொடர்பு கொள்ள",
       faq: "கேள்விகள்",
+      studio: "ஸ்டுடியோ",
+      sketch: "ஸ்கெட்ச்",
+      portal: "போர்டல்",
     },
     footer: {
       rights: "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
