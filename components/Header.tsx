@@ -24,16 +24,16 @@ export function Header() {
   }, [mobileMenuOpen]);
 
   const NAV_LINKS = [
-    { name: dict.nav.portfolio, path: `/${currentLocale}/portfolio` },
     { name: dict.nav.about, path: `/${currentLocale}/about` },
     { name: dict.nav.services, path: `/${currentLocale}/services` },
+    { name: dict.nav.portfolio, path: `/${currentLocale}/portfolio` },
     { name: dict.nav.materials, path: `/${currentLocale}/materials` },
-    { name: dict.nav.faq, path: `/${currentLocale}/faq` },
-    { name: dict.nav.blog, path: `/${currentLocale}/blog` },
-    { name: dict.nav.contact, path: `/${currentLocale}/contact` },
-    { name: "Portal", path: `/${currentLocale}/portal` },
     { name: "Studio", path: `/${currentLocale}/studio` },
     { name: "Sketch", path: `/${currentLocale}/sketch` },
+    { name: "Portal", path: `/${currentLocale}/portal` },
+    { name: dict.nav.blog, path: `/${currentLocale}/blog` },
+    { name: dict.nav.faq, path: `/${currentLocale}/faq` },
+    { name: dict.nav.contact, path: `/${currentLocale}/contact` },
   ];
 
   return (
