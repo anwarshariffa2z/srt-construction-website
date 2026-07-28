@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { ParallaxImage } from "@/components/ParallaxImage";
 import { MagneticButton } from "@/components/MagneticButton";
+import { ModelViewerWrapper } from "@/components/3d/ModelViewerWrapper";
 
 export const dynamicParams = false;
 
@@ -117,6 +118,10 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
       </section>
 
       <section className="px-[6vw] py-[15vh] relative z-20">
+        <div className="max-w-[1200px] mx-auto mb-[10vh]">
+          <h2 className="font-serif text-3xl md:text-4xl text-[var(--color-foreground)] mb-6 text-center">Interactive 3D Blueprint</h2>
+          <ModelViewerWrapper />
+        </div>
         <article className="max-w-[800px] mx-auto prose-custom">
           {project.body && <PortableText value={project.body} components={portableTextComponents} />}
         </article>

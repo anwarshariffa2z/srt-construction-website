@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Reveal } from "@/components/Reveal";
+import { LiveMaterialPrices } from "@/components/LiveMaterialPrices";
 
 export default function MaterialsClient({ dict }: { dict: any }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -58,6 +59,13 @@ export default function MaterialsClient({ dict }: { dict: any }) {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Live Material Pricing Feed */}
+      <section className="py-[10vh] px-[6vw] max-w-[1200px] mx-auto">
+        <Reveal>
+          <LiveMaterialPrices />
+        </Reveal>
       </section>
 
       {/* Material Specifications Accordion */}
