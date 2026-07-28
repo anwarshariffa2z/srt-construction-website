@@ -43,6 +43,7 @@ export default function PortalClient({ dict }: { dict: any }) {
     setLoggingIn(true);
     setError("");
     try {
+      if (!auth) throw new Error("Firebase Auth is not initialized.");
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err: any) {
       setError(err.message || "Failed to login. Please check your credentials.");
@@ -119,7 +120,7 @@ export default function PortalClient({ dict }: { dict: any }) {
             <p className="text-white/60 mt-4 text-lg">Logged in as: {user.email}</p>
           </div>
           <button 
-            onClick={() => signOut(auth)}
+            onClick={() => auth && signOut(auth)}
             className="text-[0.65rem] tracking-[0.2em] uppercase text-white/50 border border-white/20 px-6 py-3 hover:bg-white hover:text-black transition-colors"
           >
             Sign Out
