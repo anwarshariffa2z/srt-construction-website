@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import { ParallaxImage } from "@/components/ParallaxImage";
 import { MagneticButton } from "@/components/MagneticButton";
 import { ModelViewerWrapper } from "@/components/3d/ModelViewerWrapper";
+import { DownloadBrochureButton } from "@/components/DownloadBrochureButton";
 
 export const dynamicParams = false;
 
@@ -86,6 +87,9 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
               <p className="text-xl text-white/70 max-w-2xl font-light">
                 {project.excerpt}
               </p>
+            </div>
+            <div className="shrink-0">
+              <DownloadBrochureButton project={{...project, image: imageUrl}} />
             </div>
           </div>
         </div>
