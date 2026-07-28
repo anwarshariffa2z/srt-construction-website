@@ -73,10 +73,10 @@ export function DesignStudio() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-[var(--color-background)] pt-[15vh]">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-[var(--color-background)]">
       
       {/* Left Panel: Visualizer (Mock) */}
-      <div className="w-full lg:w-1/2 p-6 lg:p-12 relative flex items-center justify-center border-r border-[var(--color-stone)] bg-[var(--color-stone-dark)]">
+      <div className="w-full lg:w-1/2 p-6 lg:p-12 pt-[15vh] lg:pt-[15vh] relative flex items-center justify-center border-r border-[var(--color-stone)] bg-[var(--color-stone-dark)] lg:sticky lg:top-0 lg:h-screen">
         <div className="absolute inset-0 bg-[url('/assets/grain.png')] opacity-20 mix-blend-overlay pointer-events-none" />
         
         <div className="relative w-full max-w-lg aspect-square bg-black shadow-2xl overflow-hidden border border-white/10 group">
@@ -112,7 +112,7 @@ export function DesignStudio() {
       </div>
 
       {/* Right Panel: Controls & Pricing */}
-      <div className="w-full lg:w-1/2 p-6 lg:p-12 flex flex-col h-[85vh] overflow-y-auto scrollbar-hide relative bg-[var(--color-background)]">
+      <div className="w-full lg:w-1/2 p-6 lg:p-12 pt-[10vh] lg:pt-[15vh] pb-[150px] flex flex-col relative bg-[var(--color-background)] min-h-screen">
         <Reveal>
           <h1 className="font-serif text-4xl text-[var(--color-foreground)] mb-2">Design Studio</h1>
           <p className="text-[var(--color-foreground-soft)] text-sm mb-10">Configure your dream project and get real-time cost estimates.</p>
@@ -150,7 +150,7 @@ export function DesignStudio() {
           ))}
         </div>
 
-        <div className="flex-1 mb-24">
+        <div className="flex-1 mb-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCategory}
@@ -185,7 +185,7 @@ export function DesignStudio() {
         </div>
 
         {/* Floating Total Bar */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 lg:px-12 bg-white border-t border-[var(--color-stone)] flex items-center justify-between z-20 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
+        <div className="fixed bottom-0 right-0 w-full lg:w-1/2 p-6 lg:px-12 bg-white/90 backdrop-blur-md border-t border-[var(--color-stone)] flex items-center justify-between z-20 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
           <div>
             <div className="text-[0.65rem] tracking-[0.2em] uppercase text-[var(--color-foreground-soft)] mb-1">Estimated Base Build</div>
             <div className="font-serif text-3xl text-[var(--color-foreground)]">₹{(totalCost / 100000).toFixed(2)} Lakhs</div>
