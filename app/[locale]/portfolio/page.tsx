@@ -19,5 +19,5 @@ export default async function PortfolioPage({ params }: { params: Promise<{ loca
     ...p,
     image: p.mainImage ? urlFor(p.mainImage).url() : "/assets/projects/srt_project_exterior_1_1785080126114.jpg"
   }));
-  return <PortfolioClient initialProjects={projects} dict={dict} />;
+  return <PortfolioClient initialProjects={projects} dict={dict} locale={locale} />;
 }

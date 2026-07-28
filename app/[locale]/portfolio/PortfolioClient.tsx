@@ -20,7 +20,7 @@ export interface Project {
   completionDate: string;
   body?: any;
 }
-export default function PortfolioClient({ initialProjects, dict }: { initialProjects: Project[], dict: any }) {
+export default function PortfolioClient({ initialProjects, dict, locale }: { initialProjects: Project[], dict: any, locale: string }) {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [expandedProject, setExpandedProject] = useState<string | null>(null);
 
@@ -136,7 +136,7 @@ export default function PortfolioClient({ initialProjects, dict }: { initialProj
                                 </p>
                             </div>
                             <Link 
-                                href={`/portfolio/${project.slug}`}
+                                href={`/${locale}/portfolio/${project.slug}`}
                                 className="inline-block px-6 py-3 border border-white/30 text-white text-[0.65rem] tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-colors w-max"
                                 onClick={(e) => e.stopPropagation()}
                             >
