@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const MessageSquare = ({ size = 24, className = "" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -29,7 +30,7 @@ export function ChatWidget() {
       {
         id: 'initial-1',
         role: 'assistant',
-        parts: [{ type: 'text', text: "Hello. I am the AI Sales Engineer for SRT Constructions. How can I assist you with your project today? You can ask me about our material specifications, pricing, approvals, or construction methodology." }],
+        parts: [{ type: 'text', text: "Hello. I am the AI Estimator for SRT Constructions. How can I assist you with your project today? You can ask me for a rough cost quotation, material specifications, or construction timelines." }],
       }
     ]
   });
@@ -69,8 +70,8 @@ export function ChatWidget() {
             {/* Header */}
             <div className="bg-[var(--color-stone-dark)] text-white p-4 flex justify-between items-center shrink-0">
               <div>
-                <h3 className="font-serif text-xl">SRT AI Engineer</h3>
-                <p className="text-xs text-white/70 uppercase tracking-widest mt-1">24/7 Support</p>
+                <h3 className="font-serif text-xl">AI Build Estimator</h3>
+                <p className="text-xs text-[var(--color-bronze)] uppercase tracking-widest mt-1">Instant Quotes & Sales</p>
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
@@ -98,12 +99,18 @@ export function ChatWidget() {
                     {role === 'assistant' ? (
                       <div className="prose-custom prose-sm max-w-none">
                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
                             components={{
                               p: (props) => <p className="mb-2 last:mb-0" {...props} />,
                               ul: (props) => <ul className="list-disc pl-4 mb-2" {...props} />,
                               ol: (props) => <ol className="list-decimal pl-4 mb-2" {...props} />,
                               li: (props) => <li className="mb-1" {...props} />,
                               strong: (props) => <strong className="font-semibold text-[var(--color-bronze-deep)]" {...props} />,
+                              table: (props) => <div className="overflow-x-auto my-4 border border-[var(--color-stone)] rounded-lg"><table className="min-w-full text-left text-sm border-collapse" {...props} /></div>,
+                              thead: (props) => <thead className="bg-[var(--color-stone-dark)] text-white border-b border-[var(--color-bronze)]" {...props} />,
+                              th: (props) => <th className="p-3 font-semibold tracking-wider uppercase text-xs" {...props} />,
+                              td: (props) => <td className="p-3 border-b border-[var(--color-stone)]/30" {...props} />,
+                              tr: (props) => <tr className="hover:bg-[var(--color-stone)]/10 transition-colors" {...props} />
                             }}
                          >
                            {text}
@@ -138,6 +145,13 @@ export function ChatWidget() {
                 </div>
               )}
               <div ref={messagesEndRef} />
+            </div>
+
+            {/* Quick Actions */}
+            <div className="bg-white px-3 py-2 border-t border-[var(--color-stone)] flex gap-2 overflow-x-auto scrollbar-hide shrink-0">
+              <button onClick={() => sendMessage({ text: "Estimate a 3000 sq ft luxury villa" })} className="whitespace-nowrap text-[0.65rem] tracking-wider uppercase bg-[var(--color-stone)]/10 text-black hover:bg-[var(--color-bronze)] hover:text-white px-4 py-2 rounded-full transition-colors font-medium border border-[var(--color-stone)]/20">3000 sq ft Villa Quote</button>
+              <button onClick={() => sendMessage({ text: "What materials do you use?" })} className="whitespace-nowrap text-[0.65rem] tracking-wider uppercase bg-[var(--color-stone)]/10 text-black hover:bg-[var(--color-bronze)] hover:text-white px-4 py-2 rounded-full transition-colors font-medium border border-[var(--color-stone)]/20">Material Specs</button>
+              <button onClick={() => sendMessage({ text: "Estimate a 5000 sq ft commercial warehouse" })} className="whitespace-nowrap text-[0.65rem] tracking-wider uppercase bg-[var(--color-stone)]/10 text-black hover:bg-[var(--color-bronze)] hover:text-white px-4 py-2 rounded-full transition-colors font-medium border border-[var(--color-stone)]/20">Commercial Quote</button>
             </div>
 
             {/* Input Area */}
