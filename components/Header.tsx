@@ -32,6 +32,7 @@ export function Header() {
     { name: dict.nav.blog, path: `/${currentLocale}/blog` },
     { name: dict.nav.contact, path: `/${currentLocale}/contact` },
     { name: "Portal", path: `/${currentLocale}/portal` },
+    { name: "Studio", path: `/${currentLocale}/studio` },
   ];
 
   return (
