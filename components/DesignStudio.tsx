@@ -11,33 +11,33 @@ const CATEGORIES = [
     id: 'flooring',
     title: 'Flooring & Surfaces',
     options: [
-      { id: 'f-vitrified', name: 'Premium Vitrified Tiles', priceAdd: 0, image: '/assets/projects/srt_project_exterior_2_1785080166078.jpg', description: 'Standard high-gloss 4x2 vitrified tiles.' },
-      { id: 'f-granite', name: 'Rajasthan Granite', priceAdd: 120, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'Durable, premium granite for high-traffic areas.' },
-      { id: 'f-marble', name: 'Italian Marble (Statuario)', priceAdd: 350, image: '/assets/projects/srt_real_project_1_1785082142072.jpg', description: 'Ultra-luxury imported marble with seamless joints.' },
+      { id: 'f-vitrified', name: 'Premium Vitrified Tiles', priceAdd: 0, image: '/assets/studio/studio_flooring_vitrified_1785255360117.jpg', description: 'Standard high-gloss 4x2 vitrified tiles.' },
+      { id: 'f-granite', name: 'Rajasthan Granite', priceAdd: 120, image: '/assets/studio/studio_flooring_granite_1785255373460.jpg', description: 'Durable, premium granite for high-traffic areas.' },
+      { id: 'f-marble', name: 'Italian Marble (Statuario)', priceAdd: 350, image: '/assets/studio/studio_flooring_marble_1785255384834.jpg', description: 'Ultra-luxury imported marble with seamless joints.' },
     ]
   },
   {
     id: 'woodwork',
     title: 'Doors & Woodwork',
     options: [
-      { id: 'w-sal', name: 'Sal Wood Frames + Flush Doors', priceAdd: 0, image: '/assets/projects/srt_project_interior_1_1785080139818.jpg', description: 'Standard durable doors with laminate finish.' },
-      { id: 'w-teak', name: 'First Quality Teak Wood', priceAdd: 200, image: '/assets/projects/srt_real_project_2_1785082154617.jpg', description: 'Hand-carved premium teak for main and internal doors.' },
+      { id: 'w-sal', name: 'Sal Wood Frames + Flush Doors', priceAdd: 0, image: '/assets/studio/studio_woodwork_sal_1785255404737.jpg', description: 'Standard durable doors with laminate finish.' },
+      { id: 'w-teak', name: 'First Quality Teak Wood', priceAdd: 200, image: '/assets/studio/studio_woodwork_teak_1785255415780.jpg', description: 'Hand-carved premium teak for main and internal doors.' },
     ]
   },
   {
     id: 'kitchen',
     title: 'Modular Kitchen',
     options: [
-      { id: 'k-basic', name: 'Basic Plywood + Laminate', priceAdd: 0, image: '/assets/projects/srt_project_interior_1_1785080139818.jpg', description: 'Standard modular kitchen setup.' },
-      { id: 'k-acrylic', name: 'BWP Plywood + High Gloss Acrylic', priceAdd: 150, image: '/assets/projects/srt_project_commercial_1_1785080152919.jpg', description: 'Premium waterproof kitchen with Hafele fittings.' },
+      { id: 'k-basic', name: 'Basic Plywood + Laminate', priceAdd: 0, image: '/assets/studio/studio_kitchen_basic_1785255427658.jpg', description: 'Standard modular kitchen setup.' },
+      { id: 'k-acrylic', name: 'BWP Plywood + High Gloss Acrylic', priceAdd: 150, image: '/assets/studio/studio_kitchen_acrylic_1785255446195.jpg', description: 'Premium waterproof kitchen with Hafele fittings.' },
     ]
   },
   {
     id: 'automation',
     title: 'Smart Home Automation',
     options: [
-      { id: 'a-none', name: 'Standard Switches (Legrand)', priceAdd: 0, image: '/assets/projects/srt_project_exterior_2_1785080166078.jpg', description: 'High-quality modular switches.' },
-      { id: 'a-smart', name: 'Full Smart Home (Control4 / Fibaro)', priceAdd: 250, image: '/assets/projects/srt_project_commercial_1_1785080152919.jpg', description: 'App-controlled lighting, curtains, and AC.' },
+      { id: 'a-none', name: 'Standard Switches (Legrand)', priceAdd: 0, image: '/assets/studio/studio_automation_none_1785255458105.jpg', description: 'High-quality modular switches.' },
+      { id: 'a-smart', name: 'Full Smart Home (Control4 / Fibaro)', priceAdd: 250, image: '/assets/studio/studio_automation_smart_1785255470647.jpg', description: 'App-controlled lighting, curtains, and AC.' },
     ]
   }
 ];
