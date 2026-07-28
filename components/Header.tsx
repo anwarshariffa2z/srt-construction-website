@@ -31,6 +31,7 @@ export function Header() {
     { name: dict.nav.faq, path: `/${currentLocale}/faq` },
     { name: dict.nav.blog, path: `/${currentLocale}/blog` },
     { name: dict.nav.contact, path: `/${currentLocale}/contact` },
+    { name: "Portal", path: `/${currentLocale}/portal` },
   ];
 
   return (

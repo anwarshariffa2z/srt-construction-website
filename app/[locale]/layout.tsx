@@ -11,6 +11,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ChatWidgetWrapper } from "@/components/ChatWidgetWrapper";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import "../globals.css";
+import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -138,7 +139,9 @@ export default async function RootLayout({
           <GrainOverlay />
           <Header />
           
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
           
           <Footer locale={locale} />
           <WhatsAppButton />
