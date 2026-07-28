@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   description: "Configure your dream home finishes and get a real-time cost estimate.",
 };
 
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'ta' }];
+}
+
 export default function StudioPage() {
   return <DesignStudio />;
 }

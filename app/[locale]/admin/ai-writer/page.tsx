@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   description: "Secure admin panel for AI content generation.",
 };
 
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'ta' }];
+}
+
 export default function AiWriterPage() {
   return <AiWriterClient />;
 }
