@@ -73,10 +73,10 @@ export function DesignStudio() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-[var(--color-stone-dark)] pt-[15vh]">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-[var(--color-background)] pt-[15vh]">
       
       {/* Left Panel: Visualizer (Mock) */}
-      <div className="w-full lg:w-1/2 p-6 lg:p-12 relative flex items-center justify-center border-r border-white/10 bg-[var(--color-stone-dark)]">
+      <div className="w-full lg:w-1/2 p-6 lg:p-12 relative flex items-center justify-center border-r border-[var(--color-stone)] bg-[var(--color-stone-dark)]">
         <div className="absolute inset-0 bg-[url('/assets/grain.png')] opacity-20 mix-blend-overlay pointer-events-none" />
         
         <div className="relative w-full max-w-lg aspect-square bg-black shadow-2xl overflow-hidden border border-white/10 group">
@@ -112,14 +112,14 @@ export function DesignStudio() {
       </div>
 
       {/* Right Panel: Controls & Pricing */}
-      <div className="w-full lg:w-1/2 p-6 lg:p-12 flex flex-col h-[85vh] overflow-y-auto scrollbar-hide relative">
+      <div className="w-full lg:w-1/2 p-6 lg:p-12 flex flex-col h-[85vh] overflow-y-auto scrollbar-hide relative bg-[var(--color-background)]">
         <Reveal>
-          <h1 className="font-serif text-4xl text-white mb-2">Design Studio</h1>
-          <p className="text-white/60 text-sm mb-10">Configure your dream project and get real-time cost estimates.</p>
+          <h1 className="font-serif text-4xl text-[var(--color-foreground)] mb-2">Design Studio</h1>
+          <p className="text-[var(--color-foreground-soft)] text-sm mb-10">Configure your dream project and get real-time cost estimates.</p>
         </Reveal>
 
         <div className="mb-10">
-          <label className="block text-[0.65rem] tracking-[0.2em] uppercase text-white/50 mb-4">Project Size (Sq. Ft.)</label>
+          <label className="block text-[0.65rem] tracking-[0.2em] uppercase text-[var(--color-foreground-soft)] mb-4">Project Size (Sq. Ft.)</label>
           <div className="flex items-center gap-4">
             <input 
               type="range" 
@@ -134,7 +134,7 @@ export function DesignStudio() {
           </div>
         </div>
 
-        <div className="flex gap-4 mb-8 overflow-x-auto scrollbar-hide pb-2">
+        <div className="flex flex-wrap gap-4 mb-8 pb-2">
           {CATEGORIES.map(cat => (
             <button
               key={cat.id}
@@ -142,7 +142,7 @@ export function DesignStudio() {
               className={`whitespace-nowrap px-4 py-2 text-[0.7rem] tracking-wider uppercase transition-colors border ${
                 activeCategory === cat.id 
                   ? 'border-[var(--color-bronze)] text-[var(--color-bronze)] bg-[var(--color-bronze)]/10' 
-                  : 'border-white/20 text-white/50 hover:border-white/50'
+                  : 'border-[var(--color-stone)] text-[var(--color-foreground-soft)] hover:border-[var(--color-foreground)] hover:text-[var(--color-foreground)]'
               }`}
             >
               {cat.title}
@@ -166,17 +166,17 @@ export function DesignStudio() {
                   onClick={() => handleSelect(activeCategory, opt.id)}
                   className={`p-5 border cursor-pointer transition-all flex justify-between items-center ${
                     selections[activeCategory] === opt.id 
-                      ? 'border-[var(--color-bronze)] bg-white/5' 
-                      : 'border-white/10 hover:border-white/30'
+                      ? 'border-[var(--color-bronze)] bg-white shadow-sm' 
+                      : 'border-[var(--color-stone)] hover:border-[var(--color-foreground-soft)] bg-transparent'
                   }`}
                 >
                   <div>
-                    <h3 className={`font-serif text-lg ${selections[activeCategory] === opt.id ? 'text-[var(--color-bronze)]' : 'text-white'}`}>{opt.name}</h3>
-                    <p className="text-sm text-white/50 mt-1">{opt.description}</p>
+                    <h3 className={`font-serif text-lg ${selections[activeCategory] === opt.id ? 'text-[var(--color-bronze)]' : 'text-[var(--color-foreground)]'}`}>{opt.name}</h3>
+                    <p className="text-sm text-[var(--color-foreground-soft)] mt-1">{opt.description}</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-[0.65rem] tracking-[0.1em] uppercase text-white/40 block">Impact</span>
-                    <span className="text-sm text-white font-mono">{opt.priceAdd === 0 ? 'Included' : `+₹${opt.priceAdd}/sqft`}</span>
+                    <span className="text-[0.65rem] tracking-[0.1em] uppercase text-[var(--color-foreground-soft)] block">Impact</span>
+                    <span className="text-sm text-[var(--color-foreground)] font-mono">{opt.priceAdd === 0 ? 'Included' : `+₹${opt.priceAdd}/sqft`}</span>
                   </div>
                 </div>
               ))}
@@ -185,10 +185,10 @@ export function DesignStudio() {
         </div>
 
         {/* Floating Total Bar */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 lg:px-12 bg-[var(--color-stone-dark)] border-t border-white/10 flex items-center justify-between z-20 shadow-[0_-20px_40px_rgba(26,23,18,0.8)]">
+        <div className="absolute bottom-0 left-0 right-0 p-6 lg:px-12 bg-white border-t border-[var(--color-stone)] flex items-center justify-between z-20 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
           <div>
-            <div className="text-[0.65rem] tracking-[0.2em] uppercase text-white/50 mb-1">Estimated Base Build</div>
-            <div className="font-serif text-3xl text-white">₹{(totalCost / 100000).toFixed(2)} Lakhs</div>
+            <div className="text-[0.65rem] tracking-[0.2em] uppercase text-[var(--color-foreground-soft)] mb-1">Estimated Base Build</div>
+            <div className="font-serif text-3xl text-[var(--color-foreground)]">₹{(totalCost / 100000).toFixed(2)} Lakhs</div>
             <div className="text-xs text-[var(--color-bronze)] mt-1">@ ₹{currentPricePerSqft} / sqft</div>
           </div>
           <MagneticButton>
