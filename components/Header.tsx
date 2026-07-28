@@ -33,6 +33,7 @@ export function Header() {
     { name: dict.nav.contact, path: `/${currentLocale}/contact` },
     { name: "Portal", path: `/${currentLocale}/portal` },
     { name: "Studio", path: `/${currentLocale}/studio` },
+    { name: "Sketch", path: `/${currentLocale}/sketch` },
   ];
 
   return (
