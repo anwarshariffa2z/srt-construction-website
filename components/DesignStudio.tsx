@@ -11,33 +11,33 @@ const CATEGORIES = [
     id: 'flooring',
     title: 'Flooring & Surfaces',
     options: [
-      { id: 'f-vitrified', name: 'Premium Vitrified Tiles', priceAdd: 0, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'Standard high-gloss 4x2 vitrified tiles.' },
+      { id: 'f-vitrified', name: 'Premium Vitrified Tiles', priceAdd: 0, image: '/assets/projects/srt_project_exterior_2_1785080166078.jpg', description: 'Standard high-gloss 4x2 vitrified tiles.' },
       { id: 'f-granite', name: 'Rajasthan Granite', priceAdd: 120, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'Durable, premium granite for high-traffic areas.' },
-      { id: 'f-marble', name: 'Italian Marble (Statuario)', priceAdd: 350, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'Ultra-luxury imported marble with seamless joints.' },
+      { id: 'f-marble', name: 'Italian Marble (Statuario)', priceAdd: 350, image: '/assets/projects/srt_real_project_1_1785082142072.jpg', description: 'Ultra-luxury imported marble with seamless joints.' },
     ]
   },
   {
     id: 'woodwork',
     title: 'Doors & Woodwork',
     options: [
-      { id: 'w-sal', name: 'Sal Wood Frames + Flush Doors', priceAdd: 0, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'Standard durable doors with laminate finish.' },
-      { id: 'w-teak', name: 'First Quality Teak Wood', priceAdd: 200, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'Hand-carved premium teak for main and internal doors.' },
+      { id: 'w-sal', name: 'Sal Wood Frames + Flush Doors', priceAdd: 0, image: '/assets/projects/srt_project_interior_1_1785080139818.jpg', description: 'Standard durable doors with laminate finish.' },
+      { id: 'w-teak', name: 'First Quality Teak Wood', priceAdd: 200, image: '/assets/projects/srt_real_project_2_1785082154617.jpg', description: 'Hand-carved premium teak for main and internal doors.' },
     ]
   },
   {
     id: 'kitchen',
     title: 'Modular Kitchen',
     options: [
-      { id: 'k-basic', name: 'Basic Plywood + Laminate', priceAdd: 0, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'Standard modular kitchen setup.' },
-      { id: 'k-acrylic', name: 'BWP Plywood + High Gloss Acrylic', priceAdd: 150, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'Premium waterproof kitchen with Hafele fittings.' },
+      { id: 'k-basic', name: 'Basic Plywood + Laminate', priceAdd: 0, image: '/assets/projects/srt_project_interior_1_1785080139818.jpg', description: 'Standard modular kitchen setup.' },
+      { id: 'k-acrylic', name: 'BWP Plywood + High Gloss Acrylic', priceAdd: 150, image: '/assets/projects/srt_project_commercial_1_1785080152919.jpg', description: 'Premium waterproof kitchen with Hafele fittings.' },
     ]
   },
   {
     id: 'automation',
     title: 'Smart Home Automation',
     options: [
-      { id: 'a-none', name: 'Standard Switches (Legrand)', priceAdd: 0, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'High-quality modular switches.' },
-      { id: 'a-smart', name: 'Full Smart Home (Control4 / Fibaro)', priceAdd: 250, image: '/assets/projects/srt_project_exterior_1_1785080126114.jpg', description: 'App-controlled lighting, curtains, and AC.' },
+      { id: 'a-none', name: 'Standard Switches (Legrand)', priceAdd: 0, image: '/assets/projects/srt_project_exterior_2_1785080166078.jpg', description: 'High-quality modular switches.' },
+      { id: 'a-smart', name: 'Full Smart Home (Control4 / Fibaro)', priceAdd: 250, image: '/assets/projects/srt_project_commercial_1_1785080152919.jpg', description: 'App-controlled lighting, curtains, and AC.' },
     ]
   }
 ];
@@ -88,19 +88,23 @@ export function DesignStudio() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="absolute inset-0 bg-[var(--color-stone)] flex items-center justify-center text-white/20 text-center p-10"
+              className="absolute inset-0 bg-[var(--color-stone)] flex items-center justify-center text-white/20 text-center overflow-hidden"
             >
-              {/* In a real scenario, this would be a high-res render of the selected material */}
-              <div className="flex flex-col items-center">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="mb-4">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                  <polyline points="21 15 16 10 5 21"></polyline>
-                </svg>
-                <p className="font-serif text-xl text-white/60 mb-2">
-                  {CATEGORIES.find(c => c.id === activeCategory)?.options.find(o => o.id === selections[activeCategory])?.name}
-                </p>
-                <p className="text-sm">High-Resolution Visualizer</p>
+              {/* High-res render of the selected material */}
+              <div className="flex flex-col items-center w-full h-full relative">
+                {CATEGORIES.find(c => c.id === activeCategory)?.options.find(o => o.id === selections[activeCategory])?.image && (
+                  <img 
+                    src={CATEGORIES.find(c => c.id === activeCategory)?.options.find(o => o.id === selections[activeCategory])?.image} 
+                    alt="Material Preview" 
+                    className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity"
+                  />
+                )}
+                <div className="relative z-10 flex flex-col items-center justify-center h-full bg-black/40 w-full">
+                  <p className="font-serif text-2xl text-white mb-2 shadow-sm drop-shadow-md">
+                    {CATEGORIES.find(c => c.id === activeCategory)?.options.find(o => o.id === selections[activeCategory])?.name}
+                  </p>
+                  <p className="text-sm text-white/80 uppercase tracking-widest drop-shadow-sm">High-Resolution Visualizer</p>
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>

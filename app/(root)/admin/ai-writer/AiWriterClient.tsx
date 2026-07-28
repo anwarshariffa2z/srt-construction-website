@@ -3,10 +3,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useChat } from "@ai-sdk/react";
 import { MagneticButton } from "@/components/MagneticButton";
 import { createClient } from "@sanity/client";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'your-project-id',
@@ -16,6 +18,9 @@ const sanityClient = createClient({
 });
 
 export default function AiWriterClient() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
   const [topic, setTopic] = useState("");
   const [publishing, setPublishing] = useState(false);
   const [publishResult, setPublishResult] = useState<string | null>(null);
@@ -68,6 +73,28 @@ export default function AiWriterClient() {
     }
     setPublishing(false);
   };
+
+  if (loading) {
+    return <div className="min-h-screen bg-[var(--color-background)] pt-[15vh] px-[6vw] pb-12 text-white/50 text-center font-serif text-2xl">Authenticating...</div>;
+  }
+
+  if (!user || user.email !== "admin@srtconstructions.in") {
+    return (
+      <div className="min-h-screen bg-[var(--color-background)] pt-[15vh] px-[6vw] pb-12 flex items-center justify-center">
+        <div className="max-w-md w-full bg-[var(--color-stone-dark)] p-10 border border-red-500/30 text-center">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="mx-auto mb-6 text-red-500/50">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <h2 className="font-serif text-2xl text-white mb-2">Access Denied</h2>
+          <p className="text-white/60 mb-8 text-sm">This module is strictly restricted to SRT Administrators. Unauthorized access attempts are logged.</p>
+          <div onClick={() => router.push('/en/portal')}>
+            <MagneticButton>Go to Login</MagneticButton>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] pt-[15vh] px-[6vw] pb-12">
