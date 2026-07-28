@@ -73,7 +73,7 @@ export function DesignStudio() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-[var(--color-background)] pt-[15vh]">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-[var(--color-stone-dark)] pt-[15vh]">
       
       {/* Left Panel: Visualizer (Mock) */}
       <div className="w-full lg:w-1/2 p-6 lg:p-12 relative flex items-center justify-center border-r border-white/10 bg-[var(--color-stone-dark)]">
@@ -112,7 +112,7 @@ export function DesignStudio() {
       </div>
 
       {/* Right Panel: Controls & Pricing */}
-      <div className="w-full lg:w-1/2 p-6 lg:p-12 flex flex-col h-[85vh] overflow-y-auto scrollbar-hide">
+      <div className="w-full lg:w-1/2 p-6 lg:p-12 flex flex-col h-[85vh] overflow-y-auto scrollbar-hide relative">
         <Reveal>
           <h1 className="font-serif text-4xl text-white mb-2">Design Studio</h1>
           <p className="text-white/60 text-sm mb-10">Configure your dream project and get real-time cost estimates.</p>
@@ -150,7 +150,7 @@ export function DesignStudio() {
           ))}
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 mb-24">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCategory}
@@ -166,7 +166,7 @@ export function DesignStudio() {
                   onClick={() => handleSelect(activeCategory, opt.id)}
                   className={`p-5 border cursor-pointer transition-all flex justify-between items-center ${
                     selections[activeCategory] === opt.id 
-                      ? 'border-[var(--color-bronze)] bg-[var(--color-stone-dark)]' 
+                      ? 'border-[var(--color-bronze)] bg-white/5' 
                       : 'border-white/10 hover:border-white/30'
                   }`}
                 >
@@ -185,7 +185,7 @@ export function DesignStudio() {
         </div>
 
         {/* Floating Total Bar */}
-        <div className="mt-10 pt-6 border-t border-white/10 flex items-center justify-between">
+        <div className="absolute bottom-0 left-0 right-0 p-6 lg:px-12 bg-[var(--color-stone-dark)] border-t border-white/10 flex items-center justify-between z-20 shadow-[0_-20px_40px_rgba(26,23,18,0.8)]">
           <div>
             <div className="text-[0.65rem] tracking-[0.2em] uppercase text-white/50 mb-1">Estimated Base Build</div>
             <div className="font-serif text-3xl text-white">₹{(totalCost / 100000).toFixed(2)} Lakhs</div>
