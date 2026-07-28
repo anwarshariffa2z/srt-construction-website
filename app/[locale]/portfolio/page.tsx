@@ -17,7 +17,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ loca
   // Map mainImage to a string image property so client component can use it
   const projects = projectsRaw.map((p: any) => ({
     ...p,
-    image: p.mainImage ? urlFor(p.mainImage).url() : (p.image || "")
+    image: p.mainImage ? urlFor(p.mainImage).url() : "/assets/projects/srt_project_exterior_1_1785080126114.jpg"
   }));
   return <PortfolioClient initialProjects={projects} dict={dict} />;
 }

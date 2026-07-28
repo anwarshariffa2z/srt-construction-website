@@ -53,7 +53,7 @@ export default async function ProjectCaseStudy({ params }: { params: Promise<{ s
   
   if (!project) notFound();
 
-  const imageUrl = project.mainImage ? urlFor(project.mainImage).url() : (project.image || "");
+  const imageUrl = project.mainImage ? urlFor(project.mainImage).url() : "/assets/projects/srt_project_exterior_1_1785080126114.jpg";
 
   return (
     <main className="min-h-screen bg-[var(--color-background)]">
