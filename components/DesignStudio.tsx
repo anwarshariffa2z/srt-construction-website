@@ -51,6 +51,10 @@ export function DesignStudio() {
     automation: 'a-none',
   });
 
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [leadForm, setLeadForm] = useState({ name: '', phone: '', email: '' });
+  const [saveState, setSaveState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
   const [activeCategory, setActiveCategory] = useState('flooring');
 
   const basePricePerSqft = 2200; // Base luxury construction
@@ -70,6 +74,31 @@ export function DesignStudio() {
 
   const handleSelect = (catId: string, optId: string) => {
     setSelections(prev => ({ ...prev, [catId]: optId }));
+  };
+
+  const handleSaveDesign = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaveState("submitting");
+    try {
+      const { db } = await import("@/lib/firebase");
+      const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
+      if (!db) throw new Error("Firebase DB not initialized");
+
+      await addDoc(collection(db, "design_leads"), {
+        ...leadForm,
+        designConfig: {
+          sqft,
+          totalCost,
+          currentPricePerSqft,
+          selections,
+        },
+        createdAt: serverTimestamp(),
+      });
+      setSaveState("success");
+    } catch (error) {
+      console.error(error);
+      setSaveState("error");
+    }
   };
 
   return (
@@ -191,10 +220,93 @@ export function DesignStudio() {
             <div className="font-serif text-3xl text-[var(--color-foreground)]">₹{(totalCost / 100000).toFixed(2)} Lakhs</div>
             <div className="text-xs text-[var(--color-bronze)] mt-1">@ ₹{currentPricePerSqft} / sqft</div>
           </div>
-          <MagneticButton>
-            Save Design
-          </MagneticButton>
+          <div onClick={() => setShowSaveModal(true)}>
+            <MagneticButton>
+              Save Design
+            </MagneticButton>
+          </div>
         </div>
+
+        {/* Save Modal */}
+        <AnimatePresence>
+          {showSaveModal && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            >
+              <motion.div 
+                initial={{ scale: 0.95, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 20 }}
+                className="bg-white max-w-md w-full p-8 shadow-2xl relative"
+              >
+                <button 
+                  onClick={() => setShowSaveModal(false)}
+                  className="absolute top-4 right-4 text-[var(--color-foreground-soft)] hover:text-black transition-colors"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+
+                {saveState === 'success' ? (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-[var(--color-bronze)]/10 text-[var(--color-bronze)] rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                    <h3 className="font-serif text-2xl text-[var(--color-foreground)] mb-2">Design Saved!</h3>
+                    <p className="text-[var(--color-foreground-soft)] text-sm mb-6">Your dream project configuration has been saved. Our design team will contact you shortly.</p>
+                    <button 
+                      onClick={() => { setShowSaveModal(false); setSaveState('idle'); }}
+                      className="px-6 py-3 border border-[var(--color-stone)] text-[var(--color-foreground-soft)] hover:border-black hover:text-black transition-colors text-xs uppercase tracking-widest w-full"
+                    >
+                      Close
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSaveDesign}>
+                    <h3 className="font-serif text-2xl text-[var(--color-foreground)] mb-2">Save Your Configuration</h3>
+                    <p className="text-[var(--color-foreground-soft)] text-sm mb-8">Enter your details to receive a comprehensive breakdown of your ₹{(totalCost / 100000).toFixed(2)} Lakhs estimate.</p>
+                    
+                    {saveState === 'error' && (
+                      <div className="p-3 mb-6 bg-red-50 text-red-600 text-sm border border-red-100">
+                        Failed to save configuration. Please try again.
+                      </div>
+                    )}
+
+                    <div className="space-y-6 mb-8">
+                      <div>
+                        <label className="block text-[0.65rem] tracking-[0.2em] uppercase text-[var(--color-foreground-soft)] mb-2">Name</label>
+                        <input required type="text" value={leadForm.name} onChange={e => setLeadForm(p => ({...p, name: e.target.value}))} className="w-full border-b border-[var(--color-stone)] py-2 outline-none focus:border-[var(--color-bronze)] transition-colors text-[var(--color-foreground)]" placeholder="John Doe" />
+                      </div>
+                      <div>
+                        <label className="block text-[0.65rem] tracking-[0.2em] uppercase text-[var(--color-foreground-soft)] mb-2">Phone</label>
+                        <input required type="tel" value={leadForm.phone} onChange={e => setLeadForm(p => ({...p, phone: e.target.value}))} className="w-full border-b border-[var(--color-stone)] py-2 outline-none focus:border-[var(--color-bronze)] transition-colors text-[var(--color-foreground)]" placeholder="+91 98765 43210" />
+                      </div>
+                      <div>
+                        <label className="block text-[0.65rem] tracking-[0.2em] uppercase text-[var(--color-foreground-soft)] mb-2">Email (Optional)</label>
+                        <input type="email" value={leadForm.email} onChange={e => setLeadForm(p => ({...p, email: e.target.value}))} className="w-full border-b border-[var(--color-stone)] py-2 outline-none focus:border-[var(--color-bronze)] transition-colors text-[var(--color-foreground)]" placeholder="john@example.com" />
+                      </div>
+                    </div>
+
+                    <button 
+                      type="submit"
+                      disabled={saveState === 'submitting'}
+                      className="w-full bg-black text-white py-4 uppercase tracking-[0.2em] text-xs hover:bg-[var(--color-bronze)] transition-colors disabled:opacity-50"
+                    >
+                      {saveState === 'submitting' ? 'Saving...' : 'Save Design Configuration'}
+                    </button>
+                  </form>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
     </div>

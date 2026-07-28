@@ -20,18 +20,21 @@ export default function ContactClient({ dict }: { dict: any }) {
     setFormState("submitting");
     
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const { db } = await import("@/lib/firebase");
+      const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
 
-      if (!res.ok) throw new Error("Failed to send");
+      if (!db) throw new Error("Database not initialized");
+
+      await addDoc(collection(db, "contacts"), {
+        ...formData,
+        createdAt: serverTimestamp(),
+        source: "Website Contact Form"
+      });
       
       setFormState("success");
       setFormData({ name: "", email: "", projectType: dict.contact.form.projectTypes[0], message: "" });
     } catch (error) {
-      console.error(error);
+      console.error("Failed to send lead to Firebase:", error);
       setFormState("error");
     }
   };

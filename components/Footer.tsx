@@ -33,6 +33,7 @@ export function Footer({ locale }: { locale: string }) {
             <li><Link href={`/${locale}/about`} className="hover:text-[#c9a468] transition-colors">{dict.nav.about}</Link></li>
             <li><Link href={`/${locale}/faq`} className="hover:text-[#c9a468] transition-colors">{dict.nav.faq}</Link></li>
             <li><Link href={`/${locale}/blog`} className="hover:text-[#c9a468] transition-colors">{dict.nav.blog}</Link></li>
+            <li className="pt-2"><Link href={`/${locale}/luxury-home-construction-chennai`} className="hover:text-[#c9a468] transition-colors text-white/40">Luxury Homes Chennai</Link></li>
           </ul>
         </div>
 
