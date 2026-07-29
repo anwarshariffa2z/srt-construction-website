@@ -61,7 +61,7 @@ export function Header() {
       <motion.header
         variants={{
           visible: { y: 0 },
-          hidden: { y: "-100%" }
+          hidden: { y: -150 }
         }}
         animate={hidden ? "hidden" : "visible"}
         transition={{ duration: 0.35, ease: "easeInOut" }}
