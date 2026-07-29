@@ -3,29 +3,67 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Reveal } from "@/components/Reveal";
-import { MagneticButton } from "@/components/MagneticButton";
+import { db } from "@/lib/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+
+interface ProjectData {
+  projectId: string;
+  accessCode: string;
+  completionPercentage: number;
+  currentPhase: string;
+  nextMilestone: string;
+  totalValue: string;
+  amountPaid: string;
+  nextDue: string;
+  images: string[];
+}
 
 export default function PortalPage() {
   const [projectId, setProjectId] = useState("");
   const [accessCode, setAccessCode] = useState("");
   const [loginState, setLoginState] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [projectData, setProjectData] = useState<ProjectData | null>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginState("loading");
     
-    // Mock login delay
-    setTimeout(() => {
-      // We are mocking a successful login for the demo as requested
-      if (projectId && accessCode) {
+    if (!db) {
+      setLoginState("error");
+      return;
+    }
+
+    try {
+      const q = query(
+        collection(db, "client_projects"),
+        where("projectId", "==", projectId),
+        where("accessCode", "==", accessCode)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        // We found a match
+        const data = querySnapshot.docs[0].data() as ProjectData;
+        setProjectData(data);
         setLoginState("success");
       } else {
         setLoginState("error");
       }
-    }, 1500);
+    } catch (err) {
+      console.error("Login error:", err);
+      setLoginState("error");
+    }
   };
 
-  if (loginState === "success") {
+  const handleLogout = () => {
+    setLoginState("idle");
+    setProjectData(null);
+    setProjectId("");
+    setAccessCode("");
+  };
+
+  if (loginState === "success" && projectData) {
     return (
       <main className="min-h-screen bg-[var(--color-background)] pt-[20vh] pb-[10vh] px-[6vw]">
         <div className="max-w-[1200px] mx-auto">
@@ -34,10 +72,10 @@ export default function PortalPage() {
               <div>
                 <div className="text-[0.66rem] tracking-[0.34em] uppercase text-[var(--color-bronze)] mb-4">Project Dashboard</div>
                 <h1 className="font-serif text-[clamp(2.5rem,5vw,4rem)] text-[var(--color-foreground)] font-light leading-none">
-                  {projectId.toUpperCase() || "SRT-2026-CH"}
+                  {projectData.projectId.toUpperCase()}
                 </h1>
               </div>
-              <button onClick={() => setLoginState("idle")} className="text-xs uppercase tracking-widest text-[var(--color-foreground-soft)] hover:text-[var(--color-bronze)] transition-colors">
+              <button onClick={handleLogout} className="text-xs uppercase tracking-widest text-[var(--color-foreground-soft)] hover:text-[var(--color-bronze)] transition-colors">
                 Secure Logout
               </button>
             </div>
@@ -45,18 +83,18 @@ export default function PortalPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <Reveal delay={0.1}>
-              <div className="bg-[var(--color-stone-dark)] p-8 rounded-2xl border border-white/5 h-full">
+              <div className="bg-[var(--color-stone-dark)] p-8 rounded-2xl border border-white/5 h-full flex flex-col">
                 <h3 className="font-serif text-2xl text-white mb-6">Status Overview</h3>
-                <div className="space-y-6">
+                <div className="space-y-6 flex-1">
                   <div>
                     <div className="flex justify-between text-xs uppercase tracking-widest text-white/50 mb-2">
                       <span>Completion</span>
-                      <span className="text-[var(--color-bronze)]">45%</span>
+                      <span className="text-[var(--color-bronze)]">{projectData.completionPercentage}%</span>
                     </div>
                     <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
-                        animate={{ width: "45%" }}
+                        animate={{ width: `${projectData.completionPercentage}%` }}
                         transition={{ duration: 1, delay: 0.5 }}
                         className="h-full bg-[var(--color-bronze)]"
                       />
@@ -64,11 +102,11 @@ export default function PortalPage() {
                   </div>
                   <div className="pt-4 border-t border-white/10">
                     <p className="text-xs text-white/50 uppercase tracking-widest mb-1">Current Phase</p>
-                    <p className="text-white text-lg font-serif">Structural Framing & RCC</p>
+                    <p className="text-white text-lg font-serif">{projectData.currentPhase}</p>
                   </div>
                   <div>
                     <p className="text-xs text-white/50 uppercase tracking-widest mb-1">Next Milestone</p>
-                    <p className="text-white/80">Plumbing & Electrical Routing (Expected Aug 15)</p>
+                    <p className="text-white/80">{projectData.nextMilestone}</p>
                   </div>
                 </div>
               </div>
@@ -78,17 +116,22 @@ export default function PortalPage() {
               <div className="bg-[var(--color-stone-dark)] p-8 rounded-2xl border border-white/5 h-full">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="font-serif text-2xl text-white">Recent Site Photos</h3>
-                  <span className="text-xs text-[var(--color-bronze)] uppercase tracking-widest">Updated Today</span>
+                  <span className="text-xs text-[var(--color-bronze)] uppercase tracking-widest">Updated Live</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="aspect-square bg-white/5 rounded-lg border border-white/10 flex items-center justify-center relative overflow-hidden group">
-                      <div className="absolute inset-0 bg-[url('/assets/grain.png')] opacity-20 mix-blend-overlay z-10 pointer-events-none" />
-                      <svg className="w-8 h-8 text-white/20 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
+                  {projectData.images && projectData.images.length > 0 ? (
+                    projectData.images.map((img, i) => (
+                      <div key={i} className="aspect-square bg-white/5 rounded-lg border border-white/10 flex items-center justify-center relative overflow-hidden group">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={img} alt={`Site photo ${i+1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full py-8 text-center text-white/30 text-sm">
+                      No recent photos uploaded.
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </Reveal>
@@ -99,19 +142,19 @@ export default function PortalPage() {
                 <div className="grid md:grid-cols-4 gap-6">
                   <div>
                     <p className="text-xs text-white/50 uppercase tracking-widest mb-1">Total Project Value</p>
-                    <p className="font-serif text-2xl text-white">₹ 1.25 Cr</p>
+                    <p className="font-serif text-2xl text-white">{projectData.totalValue}</p>
                   </div>
                   <div>
                     <p className="text-xs text-white/50 uppercase tracking-widest mb-1">Amount Paid</p>
-                    <p className="font-serif text-2xl text-green-400">₹ 45.5 L</p>
+                    <p className="font-serif text-2xl text-green-400">{projectData.amountPaid}</p>
                   </div>
                   <div>
                     <p className="text-xs text-white/50 uppercase tracking-widest mb-1">Next Payment Due</p>
-                    <p className="font-serif text-2xl text-[var(--color-bronze)]">₹ 15.0 L</p>
+                    <p className="font-serif text-2xl text-[var(--color-bronze)]">{projectData.nextDue}</p>
                   </div>
                   <div className="flex items-center justify-end">
                     <button className="px-6 py-3 border border-[var(--color-bronze)] text-[var(--color-bronze)] hover:bg-[var(--color-bronze)] hover:text-white transition-colors text-xs uppercase tracking-widest">
-                      View Invoices
+                      View Receipts
                     </button>
                   </div>
                 </div>
@@ -141,11 +184,18 @@ export default function PortalPage() {
             </div>
 
             <form onSubmit={handleLogin} className="space-y-6">
-              {loginState === "error" && (
-                <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg text-center">
-                  Invalid Project ID or Access Code.
-                </div>
-              )}
+              <AnimatePresence>
+                {loginState === "error" && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    exit={{ opacity: 0 }}
+                    className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg text-center"
+                  >
+                    Invalid Project ID or Access Code.
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <div>
                 <label className="block text-[0.65rem] tracking-[0.2em] uppercase text-white/50 mb-2">Project ID</label>
@@ -153,7 +203,10 @@ export default function PortalPage() {
                   required 
                   type="text" 
                   value={projectId}
-                  onChange={(e) => setProjectId(e.target.value)}
+                  onChange={(e) => {
+                    setProjectId(e.target.value);
+                    if (loginState === "error") setLoginState("idle");
+                  }}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 outline-none focus:border-[var(--color-bronze)] transition-colors text-white text-lg placeholder-white/20" 
                   placeholder="e.g. SRT-1024" 
                 />
@@ -165,7 +218,10 @@ export default function PortalPage() {
                   required 
                   type="password" 
                   value={accessCode}
-                  onChange={(e) => setAccessCode(e.target.value)}
+                  onChange={(e) => {
+                    setAccessCode(e.target.value);
+                    if (loginState === "error") setLoginState("idle");
+                  }}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 outline-none focus:border-[var(--color-bronze)] transition-colors text-white text-lg placeholder-white/20" 
                   placeholder="••••••••" 
                 />
