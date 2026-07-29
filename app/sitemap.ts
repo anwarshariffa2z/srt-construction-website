@@ -1,24 +1,67 @@
-export const dynamic = 'force-static';
-import { MetadataRoute } from 'next';
+export const dynamic = 'force-static'
+import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://srtconstructions.in';
-
-  const staticRoutes = [
-    '',
-    '/about',
-    '/services',
-    '/portfolio',
-    '/materials',
-    '/contact',
-    '/faq',
-    '/blog',
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : 0.8,
-  }));
-
-  return staticRoutes;
+  return [
+    {
+      url: 'https://srtconstructions.in',
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 1,
+    },
+    {
+      url: 'https://srtconstructions.in/en/about',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: 'https://srtconstructions.in/en/services',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: 'https://srtconstructions.in/en/portfolio',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: 'https://srtconstructions.in/en/materials',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: 'https://srtconstructions.in/en/blog',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: 'https://srtconstructions.in/en/contact',
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.9,
+    },
+    {
+      url: 'https://srtconstructions.in/studio',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
+      url: 'https://srtconstructions.in/sketch',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: 'https://srtconstructions.in/portal',
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.5,
+    },
+  ]
 }
