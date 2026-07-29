@@ -1,21 +1,88 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { useChat } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+const MAX_CHARS = 2000;
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: '/api/chat',
-  });
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const userMessage = inputValue.trim();
+    if (!userMessage || isLoading) return;
+
+    const userMsg: ChatMessage = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: userMessage,
+    };
+    setMessages(prev => [...prev, userMsg]);
+    setInputValue('');
+    setIsLoading(true);
+
+    const assistantId = (Date.now() + 1).toString();
+    const assistantMsg: ChatMessage = { id: assistantId, role: 'assistant', content: '' };
+    setMessages(prev => [...prev, assistantMsg]);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, userMsg].map(m => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
+      });
+
+      if (!response.ok || !response.body) {
+        throw new Error('Request failed');
+      }
+
+      // Stream the response
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let accumulated = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        accumulated += chunk;
+        setMessages(prev =>
+          prev.map(m => m.id === assistantId ? { ...m, content: accumulated } : m)
+        );
+      }
+    } catch {
+      setMessages(prev =>
+        prev.map(m =>
+          m.id === assistantId
+            ? { ...m, content: 'Sorry, I encountered an error. Please try again or contact us directly.' }
+            : m
+        )
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -34,9 +101,7 @@ export function ChatWidget() {
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-[var(--color-bronze)]/20 flex items-center justify-center text-[var(--color-bronze)]">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
-                      <path d="M4 10a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8z" />
-                      <path d="M8 14h.01M16 14h.01M12 18h.01" />
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                   </div>
                   <div>
@@ -62,15 +127,15 @@ export function ChatWidget() {
                 {messages.map(m => (
                   <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm ${
-                      m.role === 'user' 
-                        ? 'bg-[var(--color-bronze)] text-black rounded-tr-sm' 
+                      m.role === 'user'
+                        ? 'bg-[var(--color-bronze)] text-black rounded-tr-sm'
                         : 'bg-white/10 text-white/90 rounded-tl-sm'
                     }`}>
-                      {m.content}
+                      {m.content || (m.role === 'assistant' && isLoading ? '...' : '')}
                     </div>
                   </div>
                 ))}
-                {isLoading && (
+                {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
                   <div className="flex justify-start">
                     <div className="bg-white/10 rounded-2xl rounded-tl-sm px-4 py-3">
                       <div className="flex gap-1">
@@ -88,14 +153,17 @@ export function ChatWidget() {
               <form onSubmit={handleSubmit} className="p-3 bg-black/40 border-t border-white/10">
                 <div className="relative">
                   <input
-                    value={input}
-                    onChange={handleInputChange}
+                    value={inputValue}
+                    onChange={e => setInputValue(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); } }}
                     placeholder="Type your question..."
-                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-4 pr-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[var(--color-bronze)] transition-colors"
+                    maxLength={MAX_CHARS}
+                    disabled={isLoading}
+                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-4 pr-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[var(--color-bronze)] transition-colors disabled:opacity-50"
                   />
-                  <button 
-                    type="submit" 
-                    disabled={!input || isLoading}
+                  <button
+                    type="submit"
+                    disabled={!inputValue.trim() || isLoading}
                     className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-[var(--color-bronze)] rounded-full flex items-center justify-center text-black disabled:opacity-50 transition-opacity"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="ml-0.5">

@@ -22,7 +22,6 @@
     "@sanity/image-url": "^2.1.1",
     "@sanity/webhook": "^4.0.4",
     "ai": "^7.0.37",
-    "axios": "^1.18.1",
     "cheerio": "^1.2.0",
     "date-fns": "^4.4.0",
     "firebase": "^12.16.0",
@@ -39,7 +38,6 @@
     "reading-time": "^1.5.0",
     "remark-gfm": "^4.0.1",
     "three": "^0.185.1",
-    "twilio": "^6.0.2",
     "zod": "^4.4.3"
   },
   "devDependencies": {

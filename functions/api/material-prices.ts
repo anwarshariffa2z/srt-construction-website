@@ -1,31 +1,30 @@
-// @ts-nocheck
-export async function onRequestGet({ env }) {
-  const FALLBACK_PRICES = [
-    { material: 'TMT Steel', brand: 'Tata Tiscon', grade: 'Fe 550D', priceINR: 76500, unit: 'tonne', updatedAt: new Date().toISOString() },
-    { material: 'TMT Steel', brand: 'JSW Neo', grade: 'Fe 550D', priceINR: 73200, unit: 'tonne', updatedAt: new Date().toISOString() },
-    { material: 'TMT Steel', brand: 'ARS', grade: 'Fe 500D', priceINR: 69800, unit: 'tonne', updatedAt: new Date().toISOString() },
-    { material: 'Cement', brand: 'Ramco Super Grade', grade: 'PPC', priceINR: 385, unit: 'bag', updatedAt: new Date().toISOString() },
-    { material: 'Cement', brand: 'UltraTech', grade: 'OPC 53', priceINR: 410, unit: 'bag', updatedAt: new Date().toISOString() },
-    { material: 'Cement', brand: 'Coromandel', grade: 'OPC 43', priceINR: 370, unit: 'bag', updatedAt: new Date().toISOString() },
-  ];
-
+// Server-side Cloudflare Function — proxies the material price request securely
+// so we don't expose user IPs to third-party proxies.
+export const onRequestGet = async () => {
   try {
-    const response = await fetch('https://www.livechennai.com/steel_price_in_chennai.asp', {
+    const targetUrl = 'https://www.livechennai.com/steel_price_in_chennai.asp';
+    const response = await fetch(targetUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'Accept': 'text/html'
-      }
+        'User-Agent': 'Mozilla/5.0 (compatible; SRTBot/1.0)',
+        'Accept': 'text/html',
+      },
     });
 
     if (!response.ok) {
-      return new Response(JSON.stringify({ success: true, data: FALLBACK_PRICES, source: 'fallback (network error)' }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      throw new Error(`Upstream fetch failed: ${response.status}`);
     }
 
     const html = await response.text();
-    const prices = [];
 
-    // Simple regex extraction to avoid cheerio/node-compat issues in Cloudflare workers
-    // Matches typical <tr><td>Brand</td><td>Grade</td><td>Rs. 75,000</td></tr>
+    // Parse the prices from the HTML server-side
+    const prices: {
+      material: string;
+      brand: string;
+      grade: string;
+      priceINR: number;
+      unit: string;
+    }[] = [];
+
     const rowRegex = /<tr[^>]*>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>/gi;
     let match;
 
@@ -33,7 +32,6 @@ export async function onRequestGet({ env }) {
       const brand = match[1].replace(/<[^>]*>?/gm, '').trim();
       const grade = match[2].replace(/<[^>]*>?/gm, '').trim();
       const priceText = match[3].replace(/<[^>]*>?/gm, '').trim();
-
       const priceINR = parseFloat(priceText.replace(/[^0-9.]/g, ''));
 
       if (brand && !isNaN(priceINR) && priceINR > 0 && brand.toLowerCase() !== 'brand') {
@@ -43,18 +41,31 @@ export async function onRequestGet({ env }) {
           grade: grade || 'Standard',
           priceINR,
           unit: brand.toLowerCase().includes('cement') || priceINR < 1000 ? 'bag' : 'tonne',
-          updatedAt: new Date().toISOString(),
         });
       }
     }
 
-    if (prices.length > 0) {
-      return new Response(JSON.stringify({ success: true, data: prices, source: 'live' }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    if (prices.length === 0) {
+      throw new Error('No prices parsed from HTML');
     }
 
-    return new Response(JSON.stringify({ success: true, data: FALLBACK_PRICES, source: 'fallback (parsing failed)' }), { status: 200, headers: { 'Content-Type': 'application/json' } });
-
-  } catch (error) {
-    return new Response(JSON.stringify({ success: true, data: FALLBACK_PRICES, source: 'fallback (exception)' }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ success: true, prices, fetchedAt: new Date().toISOString() }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=18000',
+        'Access-Control-Allow-Origin': 'https://srtconstructions.in',
+      },
+    });
+  } catch {
+    // Return fallback structure — never leak server errors to the client
+    return new Response(JSON.stringify({
+      success: false,
+      prices: [],
+      fetchedAt: new Date().toISOString(),
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
-}
+};

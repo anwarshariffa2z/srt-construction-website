@@ -4,8 +4,16 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, getDocs, doc, deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { MagneticButton } from "@/components/MagneticButton";
+
+/** SHA-256 hash a string using the browser's Web Crypto API */
+async function sha256(message: string): Promise<string> {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 interface Project {
   id?: string;
@@ -53,12 +61,14 @@ export default function AdminProjectsPage() {
     try {
       const querySnapshot = await getDocs(collection(db, "client_projects"));
       const projList: Project[] = [];
-      querySnapshot.forEach((doc) => {
-        projList.push({ id: doc.id, ...doc.data() } as Project);
+      querySnapshot.forEach((docSnapshot) => {
+        projList.push({ id: docSnapshot.id, ...docSnapshot.data() } as Project);
       });
       setProjects(projList);
-    } catch (err) {
-      console.error("Failed to fetch projects", err);
+    } catch {
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to fetch projects");
+      }
     }
     setFetching(false);
   };
@@ -76,8 +86,18 @@ export default function AdminProjectsPage() {
     setMessage("");
 
     try {
+      // Hash the access code before storing — never store plaintext passwords
+      const accessCodeHash = await sha256(formData.accessCode.trim());
+
       const cleanData = {
-        ...formData,
+        projectId: formData.projectId.trim().toUpperCase(),
+        accessCodeHash, // Store only the hash, never the raw code
+        completionPercentage: formData.completionPercentage,
+        currentPhase: formData.currentPhase,
+        nextMilestone: formData.nextMilestone,
+        totalValue: formData.totalValue,
+        amountPaid: formData.amountPaid,
+        nextDue: formData.nextDue,
         images: formData.images.filter(img => img.trim() !== ""),
         createdAt: serverTimestamp()
       };
@@ -105,7 +125,7 @@ export default function AdminProjectsPage() {
     try {
       await deleteDoc(doc(db, "client_projects", id));
       fetchProjects();
-    } catch (err) {
+    } catch {
       alert("Failed to delete project");
     }
   };
@@ -220,7 +240,7 @@ export default function AdminProjectsPage() {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="text-xl text-[var(--color-bronze)] font-serif">{proj.projectId}</h3>
-                      <p className="text-xs text-white/50 uppercase tracking-widest">Code: {proj.accessCode}</p>
+                      <p className="text-xs text-white/30 uppercase tracking-widest">Code: ••••••••  (hashed)</p>
                     </div>
                     <button onClick={() => handleDelete(proj.id!)} className="text-red-400 hover:text-red-300 text-xs uppercase tracking-widest">Delete</button>
                   </div>

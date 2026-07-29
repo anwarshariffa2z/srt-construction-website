@@ -101,7 +101,7 @@ export default async function RootLayout({
         "logo": "https://srtconstructions.in/logo.png",
         "image": "https://srtconstructions.in/logo.png",
         "description": "A premier construction and architecture firm based in Chennai, Tamil Nadu, specializing in residential, commercial, and industrial turnkey projects.",
-        "telephone": "+91-9876543210", 
+        "telephone": "+91-8056880272",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "OMR, Rajiv Gandhi Salai",
