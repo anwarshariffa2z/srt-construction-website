@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Reveal } from "@/components/Reveal";
 import { Testimonials } from "@/components/Testimonials";
 import { getDictionary } from "@/i18n/dictionaries";
+import { ProjectMap } from "@/components/ProjectMap";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -73,6 +74,23 @@ export default async function About({ params }: { params: Promise<{ locale: stri
             </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* Interactive Project Map */}
+      <section className="py-[10vh] px-[6vw] max-w-[1200px] mx-auto">
+        <Reveal>
+          <div className="text-[0.66rem] tracking-[0.34em] uppercase text-[var(--color-bronze)] mb-6">Our Footprint</div>
+          <h2 className="font-serif text-4xl text-[var(--color-foreground)] mb-4">Building Across Chennai</h2>
+          <p className="text-[var(--color-foreground-soft)] mb-12 max-w-[60ch]">
+            Explore our ongoing and completed projects across the city. We bring luxury and architectural excellence to Chennai's most premium neighborhoods.
+          </p>
+        </Reveal>
+        
+        <Reveal delay={0.2}>
+          <div className="relative z-0">
+            <ProjectMap />
+          </div>
+        </Reveal>
       </section>
 
       {/* Testimonials */}
