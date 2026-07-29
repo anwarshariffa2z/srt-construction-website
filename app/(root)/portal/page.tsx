@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Reveal } from "@/components/Reveal";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import Image from "next/image";
 
 interface ProjectData {
   projectId: string;
@@ -122,8 +123,7 @@ export default function PortalPage() {
                   {projectData.images && projectData.images.length > 0 ? (
                     projectData.images.map((img, i) => (
                       <div key={i} className="aspect-square bg-white/5 rounded-lg border border-white/10 flex items-center justify-center relative overflow-hidden group">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={img} alt={`Site photo ${i+1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <Image src={img} alt={`Site photo ${i+1}`} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     ))

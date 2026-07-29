@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MagneticButton } from './MagneticButton';
 import { Reveal } from './Reveal';
+import Image from 'next/image';
 
 // Material Database
 const CATEGORIES = [
@@ -122,10 +123,12 @@ export function DesignStudio() {
               {/* High-res render of the selected material */}
               <div className="flex flex-col items-center w-full h-full relative">
                 {CATEGORIES.find(c => c.id === activeCategory)?.options.find(o => o.id === selections[activeCategory])?.image && (
-                  <img 
-                    src={CATEGORIES.find(c => c.id === activeCategory)?.options.find(o => o.id === selections[activeCategory])?.image} 
+                  <Image 
+                    src={CATEGORIES.find(c => c.id === activeCategory)?.options.find(o => o.id === selections[activeCategory])?.image as string} 
                     alt="Material Preview" 
-                    className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover opacity-80 mix-blend-luminosity"
                   />
                 )}
                 <div className="relative z-10 flex flex-col items-center justify-center h-full bg-black/40 w-full">
