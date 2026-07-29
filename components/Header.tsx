@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { getDictionary, Locale } from "@/i18n/dictionaries";
 
@@ -23,6 +23,26 @@ export function Header() {
     }
   }, [mobileMenuOpen]);
 
+  const [hidden, setHidden] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    
+    // Never hide header if mobile menu is open
+    if (mobileMenuOpen) {
+      setHidden(false);
+      return;
+    }
+
+    // Hide header when scrolling down past 150px, show when scrolling up
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
+
   const NAV_LINKS = [
     { name: dict.nav.about, path: `/${currentLocale}/about` },
     { name: dict.nav.services, path: `/${currentLocale}/services` },
@@ -38,27 +58,36 @@ export function Header() {
 
   return (
     <>
-      {/* Logo Component - Independent so it doesn't get color inverted */}
-      <div className="fixed top-0 left-0 z-[101] px-[5vw] py-6 pointer-events-auto">
-        <Link 
-          href={`/${currentLocale}`} 
-          className="transition-opacity hover:opacity-80 block" 
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          <Image 
-            src="/assets/srt_logo.png" 
-            alt="SRT Constructions Logo" 
-            width={90} 
-            height={34} 
-            className="object-contain"
-          />
-        </Link>
-      </div>
+      <motion.header
+        variants={{
+          visible: { y: 0 },
+          hidden: { y: "-100%" }
+        }}
+        animate={hidden ? "hidden" : "visible"}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className="fixed top-0 left-0 right-0 z-[101] pointer-events-none"
+      >
+        {/* Logo Component - Independent so it doesn't get color inverted */}
+        <div className="absolute top-0 left-0 px-[5vw] py-6 pointer-events-auto">
+          <Link 
+            href={`/${currentLocale}`} 
+            className="transition-opacity hover:opacity-80 block" 
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Image 
+              src="/assets/srt_logo.png" 
+              alt="SRT Constructions Logo" 
+              width={90} 
+              height={34} 
+              className="object-contain"
+            />
+          </Link>
+        </div>
 
-      {/* Navigation - Uses mix-blend-difference to contrast against any background */}
-      <nav className="fixed top-0 left-0 right-0 z-[100] flex justify-end items-center px-[5vw] py-6 mix-blend-difference pointer-events-none">
-        
-        {/* Desktop Nav */}
+        {/* Navigation - Uses mix-blend-difference to contrast against any background */}
+        <nav className="absolute top-0 left-0 right-0 flex justify-end items-center px-[5vw] py-6 mix-blend-difference pointer-events-none">
+          
+          {/* Desktop Nav */}
         <div className="hidden md:flex gap-10 items-center text-white pointer-events-auto">
           {NAV_LINKS.map((link) => (
             <Link 
@@ -91,7 +120,8 @@ export function Header() {
             animate={{ rotate: mobileMenuOpen ? -45 : 0, y: mobileMenuOpen ? -8 : 0 }}
           />
         </button>
-      </nav>
+        </nav>
+      </motion.header>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
