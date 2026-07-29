@@ -51,6 +51,21 @@ export function CostEstimator() {
         },
         createdAt: serverTimestamp(),
       });
+
+      // Trigger Email Automation in the background
+      fetch('/api/estimator-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: leadForm.name,
+          phone: leadForm.phone,
+          email: leadForm.email,
+          sqFt: sqFt,
+          finish: finish.name,
+          estimatedCost: estimatedCost
+        }),
+      }).catch(err => console.error("Failed to trigger email:", err));
+
       setSaveState("success");
     } catch (error) {
       console.error(error);
